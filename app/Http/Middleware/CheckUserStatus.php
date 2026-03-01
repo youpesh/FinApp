@@ -42,7 +42,10 @@ class CheckUserStatus
 
             // Check if password has expired
             if ($user->password_expires_at && now()->greaterThan($user->password_expires_at)) {
-                return redirect()->route('password.expired');
+                $allowedRoutes = ['profile.edit', 'profile.update', 'password.update', 'logout'];
+                if ($request->route() && !in_array($request->route()->getName(), $allowedRoutes)) {
+                    return redirect()->route('profile.edit')->with('status', 'password-expired');
+                }
             }
         }
 

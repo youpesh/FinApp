@@ -17,4 +17,27 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// Admin Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // User Management
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
+    // Access Requests
+    Route::get('requests', [\App\Http\Controllers\UserAccessRequestController::class, 'index'])->name('requests.index');
+    Route::post('requests/{accessRequest}/approve', [\App\Http\Controllers\UserAccessRequestController::class, 'approve'])->name('requests.approve');
+    Route::post('requests/{accessRequest}/deny', [\App\Http\Controllers\UserAccessRequestController::class, 'deny'])->name('requests.deny');
+
+    // Reports
+    Route::get('reports/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('reports.users');
+    Route::get('reports/expired-passwords', [\App\Http\Controllers\Admin\ReportController::class, 'expiredPasswords'])->name('reports.expired-passwords');
+
+    // Internal Email
+    Route::get('users/{user}/email', [\App\Http\Controllers\Admin\EmailController::class, 'create'])->name('emails.create');
+    Route::post('users/{user}/email', [\App\Http\Controllers\Admin\EmailController::class, 'send'])->name('emails.send');
+    Route::get('users/{user}/email-history', [\App\Http\Controllers\Admin\EmailController::class, 'history'])->name('emails.history');
+
+    // Activity Logs
+    Route::get('activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
+});
+
+require __DIR__ . '/auth.php';

@@ -27,24 +27,36 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, \App\Services\PasswordService $passwordService): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', new \App\Rules\StrongPassword],
         ]);
 
+        $username = $passwordService->generateUsername($request->first_name, $request->last_name);
+
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'username' => $username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'password_expires_at' => now()->addDays(90),
+            // Default role is accountant or we set them to pending?
+            // Actually, public registration could default to pending status and no role.
+            // But since this is a breeze default, I will set them to pending.
+            'status' => 'pending',
         ]);
+
+        $passwordService->saveToHistory($user, $user->password);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        // Since they are pending, do not login automatically.
+        // Instead, redirect to login with a message.
+        return redirect(route('login'))->with('status', 'Registration successful. Your account is pending administrator approval.');
     }
 }

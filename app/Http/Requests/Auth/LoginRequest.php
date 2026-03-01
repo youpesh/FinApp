@@ -45,12 +45,34 @@ class LoginRequest extends FormRequest
         // Check if user exists and track failed attempts
         $user = User::where('email', $this->email)->first();
 
+        // Check user status before allowing login attempt
+        if ($user) {
+            if ($user->status === 'suspended') {
+                throw ValidationException::withMessages([
+                    'email' => 'Your account has been suspended. Please contact an administrator.',
+                ]);
+            }
+
+            if ($user->status === 'inactive') {
+                throw ValidationException::withMessages([
+                    'email' => 'Your account has been deactivated.',
+                ]);
+            }
+
+            if ($user->status === 'pending') {
+                throw ValidationException::withMessages([
+                    'email' => 'Your account is pending administrator approval.',
+                ]);
+            }
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             // Increment failed login attempts
             if ($user) {
                 $user->increment('failed_login_attempts');
+                $user->refresh();
 
                 // Suspend user after 3 failed attempts
                 if ($user->failed_login_attempts >= 3) {
@@ -65,30 +87,6 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
-        }
-
-        // Check user status before allowing login
-        if ($user) {
-            if ($user->status === 'suspended') {
-                Auth::logout();
-                throw ValidationException::withMessages([
-                    'email' => 'Your account has been suspended. Please contact an administrator.',
-                ]);
-            }
-
-            if ($user->status === 'inactive') {
-                Auth::logout();
-                throw ValidationException::withMessages([
-                    'email' => 'Your account has been deactivated.',
-                ]);
-            }
-
-            if ($user->status === 'pending') {
-                Auth::logout();
-                throw ValidationException::withMessages([
-                    'email' => 'Your account is pending administrator approval.',
-                ]);
-            }
         }
 
         RateLimiter::clear($this->throttleKey());

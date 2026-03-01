@@ -33,13 +33,20 @@ A comprehensive, modern accounting software system built with Laravel 11, featur
   - Failed login attempt tracking (max 3 attempts)
   - Automatic account suspension after failed attempts
   - User activation/deactivation controls
-  - Temporary suspension with date ranges
+  - Dated suspension with configurable start and end dates
 - **User Management**:
   - Admin-controlled user creation and role assignment
   - User access request workflow with approval system
   - Username auto-generation (FirstInitial + LastName + MMYY)
   - Profile picture support
-- **Activity Logging**: Complete audit trail of all user and data changes
+- **Administrative Reports**:
+  - User Listing report with password expiry status indicators
+  - Expired Passwords report with days-overdue count
+- **Internal Email System**:
+  - Admin-to-user email composer
+  - Per-user email history log
+  - Emails persisted in `email_logs` table
+- **Activity Logging**: System-wide audit trail UI with before/after change tracking
 
 ### Sprint 2: Chart of Accounts (Planned)
 - CRUD operations for accounts (Admin only)
@@ -187,37 +194,49 @@ The seeder creates three test accounts:
 ```
 FinApp/
 ├── app/
-│   ├── Console/Commands/          # Artisan commands (password notifications)
+│   ├── Console/Commands/          # Artisan commands (password expiry notifications)
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── Admin/            # Admin-only controllers
+│   │   │   │   ├── UserController.php
+│   │   │   │   ├── ReportController.php      # User & expired-password reports
+│   │   │   │   ├── EmailController.php       # Internal email compose/history
+│   │   │   │   └── ActivityLogController.php # Audit trail viewer
 │   │   │   └── Auth/             # Authentication controllers
 │   │   ├── Middleware/           # Custom middleware (roles, status checks)
 │   │   └── Requests/             # Form request validation
-│   ├── Models/                   # Eloquent models
+│   ├── Models/                   # Eloquent models (User, EmailLog, PasswordHistory)
 │   ├── Notifications/            # Email/database notifications
-│   ├── Rules/                    # Custom validation rules
-│   └── Services/                 # Business logic services
+│   ├── Rules/                    # Custom validation rules (StrongPassword)
+│   └── Services/                 # Business logic services (PasswordService)
 ├── database/
 │   ├── migrations/               # Database migrations
 │   └── seeders/                  # Database seeders
 ├── resources/
-│   ├── views/                    # Blade templates
-│   ├── css/                      # Stylesheets
-│   └── js/                       # JavaScript
+│   └── views/
+│       ├── admin/
+│       │   ├── users/            # User management views
+│       │   ├── reports/          # User & expired-password reports
+│       │   ├── emails/           # Compose & history views
+│       │   └── activity-logs/    # Audit trail view
+│       └── auth/                 # Login, register, password reset
 └── routes/
-    ├── web.php                   # Web routes
+    ├── web.php                   # Web routes (admin, profile)
     └── auth.php                  # Authentication routes
 ```
 
 ## 📊 Sprint Progress
 
-- [x] **Sprint 1**: User Interface & Authentication Module
-  - [x] Multi-role authentication
-  - [x] Password security & management
-  - [x] User management dashboard
-  - [x] Activity logging
-  - [x] Password expiry notifications
+- [x] **Sprint 1**: User Interface & Authentication Module ✅
+  - [x] Multi-role authentication (Admin, Manager, Accountant)
+  - [x] Password security & management (complexity, history, 90-day expiry)
+  - [x] User management dashboard (create, edit, suspend, delete)
+  - [x] Dated user suspension with start/end date pickers
+  - [x] Activity logging with admin audit trail UI
+  - [x] Password expiry notifications (3-day warning)
+  - [x] Administrative reports (User Listing, Expired Passwords)
+  - [x] Internal email system (compose + per-user history)
+  - [x] All 25 automated tests passing
   
 - [ ] **Sprint 2**: Chart of Accounts Module
 - [ ] **Sprint 3**: Journalizing & Ledger Module
@@ -256,14 +275,19 @@ FinApp/
 
 1. **User Management**:
    - Create new users and assign roles
-   - Activate/deactivate users
-   - Suspend users temporarily
-   - View user activity logs
+   - Approve or deny user access requests
+   - Activate, deactivate, or terminate users
+   - Suspend users with optional dated start/end periods
 
-2. **System Configuration**:
-   - Manage chart of accounts (Sprint 2)
-   - Configure error messages
-   - Monitor system activity
+2. **Administrative Tools**:
+   - View User Listing report with password expiry indicators
+   - View Expired Passwords report
+   - Send internal emails to users
+   - Review system-wide activity audit trail
+
+3. **System Monitoring**:
+   - Monitor login attempts and account lockouts
+   - Receive password expiry notifications
 
 ### For Managers
 
