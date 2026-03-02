@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\UserAccessRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PasswordExpiryWarning extends Mailable implements ShouldQueue
+class NewAccessRequestNotification extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -18,8 +18,7 @@ class PasswordExpiryWarning extends Mailable implements ShouldQueue
      * Create a new message instance.
      */
     public function __construct(
-        public User $user,
-        public int $daysRemaining
+        public UserAccessRequest $accessRequest
     ) {
     }
 
@@ -29,7 +28,7 @@ class PasswordExpiryWarning extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Smart Finance — Your Password Will Expire Soon',
+            subject: 'Smart Finance — New User Access Request',
         );
     }
 
@@ -39,7 +38,7 @@ class PasswordExpiryWarning extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.password-expiry-warning',
+            view: 'emails.new-access-request',
         );
     }
 }

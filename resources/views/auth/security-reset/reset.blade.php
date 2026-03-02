@@ -5,6 +5,7 @@
 
     <form method="POST" action="{{ route('password.security.reset') }}">
         @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
 
         <!-- New Password -->
         <div>

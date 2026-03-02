@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SecurityResetToken;
 use App\Models\User;
 use App\Rules\StrongPassword;
 use App\Services\PasswordService;
@@ -25,7 +26,7 @@ class SecurityQuestionResetController extends Controller
     }
 
     /**
-     * Step 2: Verify identity and show security question.
+     * Step 2: Verify identity, generate token, and show security question.
      */
     public function verifyIdentity(Request $request): View|RedirectResponse
     {
@@ -39,17 +40,27 @@ class SecurityQuestionResetController extends Controller
             ->first();
 
         if (!$user || !$user->security_question) {
-            // Don't reveal whether user exists
             return back()->withErrors([
                 'email' => 'We could not find an account matching those credentials, or no security question is set.',
             ])->withInput();
         }
 
-        // Store user id in session for the next step
-        session(['security_reset_user_id' => $user->id]);
+        // Clean up any old tokens for this user
+        SecurityResetToken::where('user_id', $user->id)->delete();
+
+        // Generate a secure token
+        $token = Str::random(64);
+
+        SecurityResetToken::create([
+            'user_id' => $user->id,
+            'token' => hash('sha256', $token),
+            'answer_verified' => false,
+            'expires_at' => now()->addMinutes(15),
+        ]);
 
         return view('auth.security-reset.answer', [
             'security_question' => $user->security_question,
+            'token' => $token,
         ]);
     }
 
@@ -60,27 +71,31 @@ class SecurityQuestionResetController extends Controller
     {
         $request->validate([
             'security_answer' => ['required', 'string'],
+            'token' => ['required', 'string'],
         ]);
 
-        $userId = session('security_reset_user_id');
+        $resetToken = SecurityResetToken::where('token', hash('sha256', $request->token))->first();
 
-        if (!$userId) {
+        if (!$resetToken || $resetToken->isExpired()) {
+            SecurityResetToken::where('token', hash('sha256', $request->token))->delete();
             return redirect()->route('password.security.identify')
-                ->withErrors(['email' => 'Session expired. Please start over.']);
+                ->withErrors(['email' => 'This reset link has expired. Please start over.']);
         }
 
-        $user = User::findOrFail($userId);
+        $user = $resetToken->user;
 
         if (!Hash::check(strtolower(trim($request->security_answer)), $user->security_answer)) {
             return back()->withErrors([
                 'security_answer' => 'The security answer is incorrect.',
-            ]);
+            ])->with('token', $request->token);
         }
 
-        // Mark that the answer was verified
-        session(['security_answer_verified' => true]);
+        // Mark token as answer-verified
+        $resetToken->update(['answer_verified' => true]);
 
-        return view('auth.security-reset.reset');
+        return view('auth.security-reset.reset', [
+            'token' => $request->token,
+        ]);
     }
 
     /**
@@ -90,17 +105,17 @@ class SecurityQuestionResetController extends Controller
     {
         $request->validate([
             'password' => ['required', 'confirmed', new StrongPassword],
+            'token' => ['required', 'string'],
         ]);
 
-        $userId = session('security_reset_user_id');
-        $verified = session('security_answer_verified');
+        $resetToken = SecurityResetToken::where('token', hash('sha256', $request->token))->first();
 
-        if (!$userId || !$verified) {
+        if (!$resetToken || $resetToken->isExpired() || !$resetToken->answer_verified) {
             return redirect()->route('password.security.identify')
-                ->withErrors(['email' => 'Session expired. Please start over.']);
+                ->withErrors(['email' => 'This reset link has expired. Please start over.']);
         }
 
-        $user = User::findOrFail($userId);
+        $user = $resetToken->user;
 
         // Check password history
         if ($passwordService->wasPasswordUsedBefore($user, $request->password)) {
@@ -118,8 +133,8 @@ class SecurityQuestionResetController extends Controller
 
         $passwordService->saveToHistory($user, $user->password);
 
-        // Clean up session
-        session()->forget(['security_reset_user_id', 'security_answer_verified']);
+        // Clean up the used token
+        $resetToken->delete();
 
         event(new PasswordReset($user));
 

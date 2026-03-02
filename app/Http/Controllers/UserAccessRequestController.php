@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserAccessRequest;
 use App\Mail\AccessRequestApproved;
+use App\Mail\NewAccessRequestNotification;
 use App\Services\PasswordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -42,6 +43,13 @@ class UserAccessRequestController extends Controller
 
         UserAccessRequest::create($validated);
 
+        // Notify all admins about the new access request
+        $admins = User::where('role', 'admin')->where('status', 'active')->get();
+        $latestRequest = UserAccessRequest::where('email', $validated['email'])->latest()->first();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new NewAccessRequestNotification($latestRequest));
+        }
+
         return redirect()->route('login')->with('status', 'Your access request has been submitted and is pending administrator approval.');
     }
 
@@ -70,8 +78,8 @@ class UserAccessRequestController extends Controller
         // Generate username
         $username = $passwordService->generateUsername($accessRequest->first_name, $accessRequest->last_name);
 
-        // Generate a temporary password (or we could trigger a password reset email instead)
-        $temporaryPassword = Str::random(12) . 'A1!'; // Ensuring it passes the strong password rule visually
+        // Generate a cryptographically secure temporary password
+        $temporaryPassword = Str::password(16);
 
         $user = User::create([
             'first_name' => $accessRequest->first_name,

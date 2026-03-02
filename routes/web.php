@@ -15,6 +15,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Forced password change for expired passwords
+    Route::get('/password/expired', [\App\Http\Controllers\Auth\ExpiredPasswordController::class, 'show'])->name('password.expired');
+    Route::put('/password/expired', [\App\Http\Controllers\Auth\ExpiredPasswordController::class, 'update'])->name('password.expired.update');
 });
 
 // Admin Routes
