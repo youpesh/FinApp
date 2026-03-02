@@ -21,20 +21,24 @@
             <x-input-label for="profile_picture" :value="__('Profile Picture')" />
             <div class="mt-2 flex items-center gap-x-3">
                 @if ($user->profile_picture)
-                    <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Profile Picture" class="h-12 w-12 rounded-full object-cover">
+                    <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Profile Picture"
+                        class="h-12 w-12 rounded-full object-cover">
                 @else
-                    <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                    <div
+                        class="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-300">
                         {{ substr($user->first_name, 0, 1) }}{{ substr($user->last_name, 0, 1) }}
                     </div>
                 @endif
-                <input type="file" id="profile_picture" name="profile_picture" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                <input type="file" id="profile_picture" name="profile_picture"
+                    class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/50 dark:file:text-indigo-300 dark:hover:file:bg-indigo-900/70" />
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('profile_picture')" />
         </div>
 
         <div>
             <x-input-label for="first_name" :value="__('First Name')" />
-            <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('first_name', $user->first_name)" required autofocus autocomplete="given-name" />
+            <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
+                :value="old('first_name', $user->first_name)" required autofocus autocomplete="given-name" />
             <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
         </div>
 
@@ -49,12 +53,13 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                        <button form="send-verification"
+                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
@@ -72,13 +77,8 @@
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
             @endif
         </div>
     </form>

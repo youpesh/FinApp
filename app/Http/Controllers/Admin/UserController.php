@@ -62,7 +62,7 @@ class UserController extends Controller
             'last_name' => $validated['last_name'],
             'username' => $username,
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'role' => $validated['role'],
             'status' => $validated['status'],
             'password_expires_at' => now()->addDays(90),

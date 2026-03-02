@@ -12,10 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Dark Mode Init -->
+    <!-- Dark Mode Init — must run BEFORE styles load to prevent flicker -->
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark')
@@ -23,6 +20,9 @@
             document.documentElement.classList.remove('dark')
         }
     </script>
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false }">
@@ -36,7 +36,7 @@
             <!-- Logo -->
             <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-700/60">
                 <div class="flex-shrink-0">
-                    <x-application-logo white class="h-10 w-auto" />
+                    <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="Smart Finance Logo">
                 </div>
                 <span class="text-white font-bold text-lg tracking-tight">Smart Finance</span>
             </div>
@@ -63,7 +63,7 @@
 
                     <a href="{{ route('admin.users.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                           {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                               {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -73,7 +73,7 @@
 
                     <a href="{{ route('admin.requests.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                           {{ request()->routeIs('admin.requests.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                               {{ request()->routeIs('admin.requests.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -83,7 +83,7 @@
 
                     <a href="{{ route('admin.reports.users') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                           {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                               {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -93,7 +93,7 @@
 
                     <a href="{{ route('admin.activity-logs.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                           {{ request()->routeIs('admin.activity-logs.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                               {{ request()->routeIs('admin.activity-logs.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />

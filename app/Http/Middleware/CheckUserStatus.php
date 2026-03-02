@@ -22,6 +22,8 @@ class CheckUserStatus
             // Check if user is suspended
             if ($user->status === 'suspended') {
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
                 return redirect()->route('login')
                     ->withErrors(['email' => 'Your account has been suspended.']);
             }
@@ -29,6 +31,8 @@ class CheckUserStatus
             // Check if user is inactive
             if ($user->status === 'inactive') {
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
                 return redirect()->route('login')
                     ->withErrors(['email' => 'Your account has been deactivated.']);
             }
@@ -36,6 +40,8 @@ class CheckUserStatus
             // Check if user is pending approval
             if ($user->status === 'pending') {
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
                 return redirect()->route('login')
                     ->withErrors(['email' => 'Your account is pending approval.']);
             }

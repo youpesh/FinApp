@@ -30,7 +30,7 @@ class PasswordController extends Controller
         }
 
         $user->update([
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'password_expires_at' => now()->addDays(90),
         ]);
 

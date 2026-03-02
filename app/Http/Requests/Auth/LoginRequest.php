@@ -42,31 +42,10 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // Check if user exists and track failed attempts
+        // Look up user for tracking failed attempts (but do NOT leak their status yet)
         $user = User::where('email', $this->email)->first();
 
-        // Check user status before allowing login attempt
-        if ($user) {
-            if ($user->status === 'suspended') {
-                throw ValidationException::withMessages([
-                    'email' => 'Your account has been suspended. Please contact an administrator.',
-                ]);
-            }
-
-            if ($user->status === 'inactive') {
-                throw ValidationException::withMessages([
-                    'email' => 'Your account has been deactivated.',
-                ]);
-            }
-
-            if ($user->status === 'pending') {
-                throw ValidationException::withMessages([
-                    'email' => 'Your account is pending administrator approval.',
-                ]);
-            }
-        }
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             // Increment failed login attempts
@@ -76,16 +55,37 @@ class LoginRequest extends FormRequest
 
                 // Suspend user after 3 failed attempts
                 if ($user->failed_login_attempts >= 3) {
-                    $user->update(['status' => 'suspended']);
-                    
-                    throw ValidationException::withMessages([
-                        'email' => 'Your account has been suspended due to multiple failed login attempts. Please contact an administrator.',
+                    $user->update([
+                        'status' => 'suspended',
+                        'suspension_start_date' => now(),
                     ]);
                 }
             }
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Auth succeeded — NOW check account status (no enumeration leak)
+        if ($user->status === 'suspended') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been suspended. Please contact an administrator.',
+            ]);
+        }
+
+        if ($user->status === 'inactive') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been deactivated.',
+            ]);
+        }
+
+        if ($user->status === 'pending') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account is pending administrator approval.',
             ]);
         }
 
@@ -99,7 +99,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -120,6 +120,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

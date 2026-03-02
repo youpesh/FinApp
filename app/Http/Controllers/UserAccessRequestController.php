@@ -62,16 +62,16 @@ class UserAccessRequestController extends Controller
 
         // Generate username
         $username = $passwordService->generateUsername($accessRequest->first_name, $accessRequest->last_name);
-        
+
         // Generate a temporary password (or we could trigger a password reset email instead)
         $temporaryPassword = Str::random(12) . 'A1!'; // Ensuring it passes the strong password rule visually
-        
+
         $user = User::create([
             'first_name' => $accessRequest->first_name,
             'last_name' => $accessRequest->last_name,
             'username' => $username,
             'email' => $accessRequest->email,
-            'password' => Hash::make($temporaryPassword),
+            'password' => $temporaryPassword,
             'address' => $accessRequest->address,
             'dob' => $accessRequest->dob,
             'role' => $validated['role'],

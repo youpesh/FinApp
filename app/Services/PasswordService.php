@@ -14,13 +14,13 @@ class PasswordService
     public function wasPasswordUsedBefore(User $user, string $password): bool
     {
         $histories = $user->passwordHistories()->get();
-        
+
         foreach ($histories as $history) {
             if (Hash::check($password, $history->password_hash)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -56,7 +56,7 @@ class PasswordService
         }
 
         $daysUntilExpiry = now()->diffInDays($user->password_expires_at, false);
-        
+
         return $daysUntilExpiry >= 0 && $daysUntilExpiry <= 3;
     }
 
@@ -69,18 +69,18 @@ class PasswordService
         $firstInitial = strtolower(substr($firstName, 0, 1));
         $lastNameFormatted = strtolower(str_replace(' ', '', $lastName));
         $monthYear = now()->format('my');
-        
+
         $baseUsername = $firstInitial . $lastNameFormatted . $monthYear;
-        
-        // Check if username exists, if so, append a number
+
+        // Check if username exists (including soft-deleted users to prevent collisions on restore)
         $username = $baseUsername;
         $counter = 1;
-        
-        while (User::where('username', $username)->exists()) {
+
+        while (User::withTrashed()->where('username', $username)->exists()) {
             $username = $baseUsername . $counter;
             $counter++;
         }
-        
+
         return $username;
     }
 }
