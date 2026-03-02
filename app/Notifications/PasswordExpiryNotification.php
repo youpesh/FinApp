@@ -45,7 +45,7 @@ class PasswordExpiryNotification extends Notification implements ShouldQueue
             ->line($message)
             ->line('Please change your password to maintain access to your account.')
             ->action('Change Password', url('/password/change'))
-            ->line('Thank you for using FinApp!');
+            ->line('Thank you for using Smart Finance!');
     }
 
     /**

@@ -1,4 +1,4 @@
-# 💼 FinApp - Web-Based Accounting Software
+# 💼 Smart Finance - Web-Based Accounting Software
 
 A comprehensive, modern accounting software system built with Laravel 11, featuring role-based access control, chart of accounts management, journal entry workflows, financial reporting, and advanced analytics.
 
@@ -192,7 +192,7 @@ The seeder creates three test accounts:
 ## 📁 Project Structure
 
 ```
-FinApp/
+Smart Finance/
 ├── app/
 │   ├── Console/Commands/          # Artisan commands (password expiry notifications)
 │   ├── Http/

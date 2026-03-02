@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FinApp - Accounting Software</title>
+    <title>Smart Finance - Accounting Software</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -54,7 +54,7 @@
             </svg>
         </div>
         <h1 class="text-4xl lg:text-5xl font-semibold tracking-tight mb-4 text-gray-900 dark:text-white">Welcome to
-            FinApp</h1>
+            Smart Finance</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-10 max-w-xl">
             Modern, secure, and intuitive web-based accounting software designed to streamline your financial workflows
             and reporting.
@@ -75,7 +75,7 @@
     </main>
 
     <footer class="mt-auto pt-16 pb-4 text-sm text-gray-500 dark:text-gray-400">
-        &copy; {{ date('Y') }} FinApp. All rights reserved.
+        &copy; {{ date('Y') }} Smart Finance. All rights reserved.
     </footer>
 </body>
 

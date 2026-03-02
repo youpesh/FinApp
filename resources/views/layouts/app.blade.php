@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'FinApp') }}</title>
+    <title>{{ config('app.name', 'Smart Finance') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,7 @@
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <span class="text-white font-bold text-lg tracking-tight">FinApp</span>
+                <span class="text-white font-bold text-lg tracking-tight">Smart Finance</span>
             </div>
 
             <!-- Nav -->
@@ -196,7 +196,7 @@
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <span class="font-bold text-gray-800 dark:text-gray-100">FinApp</span>
+                <span class="font-bold text-gray-800 dark:text-gray-100">Smart Finance</span>
             </header>
 
             <!-- Page header slot -->
