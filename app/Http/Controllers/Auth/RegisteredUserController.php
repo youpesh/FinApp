@@ -33,6 +33,8 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'security_question' => ['required', 'string', 'max:255'],
+            'security_answer' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', new \App\Rules\StrongPassword],
         ]);
 
@@ -44,10 +46,9 @@ class RegisteredUserController extends Controller
             'username' => $username,
             'email' => $request->email,
             'password' => $request->password,
+            'security_question' => $request->security_question,
+            'security_answer' => Hash::make(strtolower(trim($request->security_answer))),
             'password_expires_at' => now()->addDays(90),
-            // Default role is accountant or we set them to pending?
-            // Actually, public registration could default to pending status and no role.
-            // But since this is a breeze default, I will set them to pending.
             'status' => 'pending',
         ]);
 

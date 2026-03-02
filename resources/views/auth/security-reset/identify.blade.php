@@ -1,12 +1,12 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        {{ __('To reset your password, please enter your email address and username below.') }}
     </div>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.security.verify-identity') }}">
         @csrf
 
         <!-- Email Address -->
@@ -17,21 +17,23 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+        <!-- Username -->
+        <div class="mt-4">
+            <x-input-label for="username" :value="__('Username')" />
+            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')"
+                required />
+            <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
 
-        <div class="mt-4 text-center">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ __('Or') }}</span>
-        </div>
-
-        <div class="flex items-center justify-center mt-2">
+        <div class="flex items-center justify-between mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                href="{{ route('password.security.identify') }}">
-                {{ __('Reset using Security Question') }}
+                href="{{ route('login') }}">
+                {{ __('Back to Login') }}
             </a>
+
+            <x-primary-button>
+                {{ __('Continue') }}
+            </x-primary-button>
         </div>
     </form>
 </x-guest-layout>

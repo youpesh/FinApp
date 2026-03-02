@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserAccessRequest;
+use App\Mail\AccessRequestApproved;
 use App\Services\PasswordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +33,12 @@ class UserAccessRequestController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'unique:user_access_requests,email,NULL,id,status,pending'],
             'address' => ['nullable', 'string', 'max:255'],
             'dob' => ['nullable', 'date'],
+            'security_question' => ['required', 'string', 'max:255'],
+            'security_answer' => ['required', 'string', 'max:255'],
         ]);
+
+        // Hash the security answer before storing
+        $validated['security_answer'] = Hash::make(strtolower(trim($validated['security_answer'])));
 
         UserAccessRequest::create($validated);
 
@@ -72,6 +79,8 @@ class UserAccessRequestController extends Controller
             'username' => $username,
             'email' => $accessRequest->email,
             'password' => $temporaryPassword,
+            'security_question' => $accessRequest->security_question,
+            'security_answer' => $accessRequest->security_answer,
             'address' => $accessRequest->address,
             'dob' => $accessRequest->dob,
             'role' => $validated['role'],
@@ -88,10 +97,10 @@ class UserAccessRequestController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        // Here we could send an email with the temporary password
-        // For now, we will display it in the flash message
+        // Send approval email with login credentials
+        Mail::to($user->email)->send(new AccessRequestApproved($user, $temporaryPassword));
 
-        return back()->with('status', "Request approved. User created with username: {$username} and temporary password: {$temporaryPassword}. They will be forced to change it upon login.");
+        return back()->with('status', "Request approved. User created with username: {$username}. An email with login credentials has been sent to {$user->email}.");
     }
 
     /**
