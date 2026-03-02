@@ -68,7 +68,8 @@
                             id="user-dropdown">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                                    {{ Auth::user()->full_name }}</p>
+                                    {{ Auth::user()->full_name }}
+                                </p>
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}
                                 </p>
                             </div>
@@ -114,7 +115,7 @@
                     </a>
                 </li>
 
-                @if (Auth::user()->role === 'administrator')
+                @if (Auth::user()->isAdmin())
                     {{-- Admin Section --}}
                     <li class="pt-4 pb-1">
                         <span
@@ -126,13 +127,13 @@
                             <svg class="w-5 h-5 {{ request()->routeIs('admin.users.*') ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white' }}"
                                 fill="currentColor" viewBox="0 0 20 18">
                                 <path
-                                    d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                                    d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2ZM15 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
                             </svg>
                             <span class="ms-3">Users</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.reports.index') }}"
+                        <a href="{{ route('admin.reports.users') }}"
                             class="flex items-center p-2 rounded-lg group {{ request()->routeIs('admin.reports.*') ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}">
                             <svg class="w-5 h-5 {{ request()->routeIs('admin.reports.*') ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white' }}"
                                 fill="currentColor" viewBox="0 0 20 20">

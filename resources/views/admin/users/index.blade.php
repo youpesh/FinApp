@@ -107,7 +107,7 @@
                             <td class="px-6 py-4 font-mono text-gray-700 dark:text-gray-300">{{ $user->username }}</td>
                             <td class="px-6 py-4">
                                 @php
-                                    $roleColors = ['administrator' => 'purple', 'manager' => 'blue', 'accountant' => 'indigo'];
+                                    $roleColors = ['admin' => 'purple', 'manager' => 'blue', 'accountant' => 'indigo'];
                                     $rc = $roleColors[$user->role] ?? 'gray';
                                 @endphp
                                 <span
