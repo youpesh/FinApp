@@ -46,16 +46,20 @@
                                         </td>
                                         <td class="px-4 py-3 text-sm">
                                             @php
-                                                $eventColors = ['created' => 'green', 'updated' => 'blue', 'deleted' => 'red'];
-                                                $color = $eventColors[$log->event] ?? 'gray';
+                                                $eventClasses = [
+                                                    'created' => 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+                                                    'updated' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300',
+                                                    'deleted' => 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+                                                ];
+                                                $ec = $eventClasses[$log->event] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900/40 dark:text-gray-300';
                                             @endphp
-                                            <span
-                                                class="px-2.5 py-1 rounded-full text-xs font-medium bg-{{ $color }}-100 text-{{ $color }}-800 dark:bg-{{ $color }}-900/40 dark:text-{{ $color }}-300 capitalize">
+                                            <span class="px-2.5 py-1 rounded-full text-xs font-medium {{ $ec }} capitalize">
                                                 {{ $log->event }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                            {{ $log->description }}</td>
+                                            {{ $log->description }}
+                                        </td>
                                         <td class="px-4 py-3 text-sm">
                                             @if($log->causer)
                                                 <span
