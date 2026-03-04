@@ -32,7 +32,6 @@ class PasswordService
         PasswordHistory::create([
             'user_id' => $user->id,
             'password_hash' => $hashedPassword,
-            'created_at' => now(),
         ]);
     }
 

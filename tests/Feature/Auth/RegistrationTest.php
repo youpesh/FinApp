@@ -22,6 +22,8 @@ class RegistrationTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',
+            'security_question' => 'What is your pet name?',
+            'security_answer' => 'Buddy',
             'password' => 'Password1!',
             'password_confirmation' => 'Password1!',
         ]);

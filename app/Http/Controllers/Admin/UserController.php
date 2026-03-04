@@ -51,27 +51,36 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'role' => ['required', Rule::in(['admin', 'manager', 'accountant'])],
             'status' => ['required', Rule::in(['active', 'inactive', 'suspended', 'pending'])],
-            // Temporary simple password rule until strict rule is implemented in next task
-            'password' => ['required', 'confirmed', new \App\Rules\StrongPassword],
         ]);
 
         $username = $passwordService->generateUsername($validated['first_name'], $validated['last_name']);
+
+        // Generate a secure temporary password
+        $temporaryPassword = \Illuminate\Support\Str::password(16);
 
         $user = User::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'username' => $username,
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'password' => $temporaryPassword,
             'role' => $validated['role'],
             'status' => $validated['status'],
-            'password_expires_at' => now()->addDays(90),
+            'password_expires_at' => now()->subDay(), // Force password change on first login
             'created_by' => auth()->id(),
         ]);
 
         $passwordService->saveToHistory($user, $user->password);
 
-        return redirect()->route('admin.users.index')->with('status', 'User created successfully. Username: ' . $username);
+        // Send credentials email to the new user
+        try {
+            \Illuminate\Support\Facades\Mail::to($user->email)
+                ->send(new \App\Mail\AccessRequestApproved($user, $temporaryPassword));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send new user credentials email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('admin.users.index')->with('status', 'User created successfully. Username: ' . $username . '. Login credentials have been emailed to ' . $user->email . '.');
     }
 
     /**

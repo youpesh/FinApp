@@ -12,6 +12,7 @@ A comprehensive, modern accounting software system built with Laravel 11, featur
 - [Tech Stack](#tech-stack)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Docker Deployment (Easiest)](#docker-deployment-easiest)
 - [Default Credentials](#default-credentials)
 - [Project Structure](#project-structure)
 - [Sprint Progress](#sprint-progress)
@@ -168,6 +169,33 @@ php artisan serve
 ```
 
 Visit `http://127.0.0.1:8000` in your browser.
+
+## 🐳 Docker Deployment (Easiest)
+
+For a quick demo on any server, use Docker. This bundles PHP, Node, and the database into containers.
+
+### 1. Requirements
+Ensure **Docker** and **Docker Compose** are installed on your server.
+
+### 2. Setup & Start
+Run these commands in the project root:
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Start the containers
+./vendor/bin/sail up -d
+
+# Initialize the application
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate:fresh --seed
+./vendor/bin/sail artisan storage:link
+./vendor/bin/sail npm run build
+```
+
+The application will be available at `http://your-server-ip`.
+
 
 ### 8. Set Up Scheduled Tasks (Optional)
 

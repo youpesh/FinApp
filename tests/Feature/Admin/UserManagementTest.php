@@ -56,8 +56,6 @@ class UserManagementTest extends TestCase
             'email' => 'jane@example.com',
             'role' => 'accountant',
             'status' => 'active',
-            'password' => 'SecurePass1!',
-            'password_confirmation' => 'SecurePass1!',
         ]);
 
         $this->assertDatabaseHas('users', ['email' => 'jane@example.com']);
@@ -73,14 +71,12 @@ class UserManagementTest extends TestCase
             'email' => 'jane@example.com',
             'role' => 'accountant',
             'status' => 'active',
-            'password' => 'SecurePass1!',
-            'password_confirmation' => 'SecurePass1!',
         ]);
 
         $user = User::where('email', 'jane@example.com')->first();
         $this->assertNotNull($user);
-        // Password should be hashed once — verify it matches the plain text
-        $this->assertTrue(Hash::check('SecurePass1!', $user->password));
+        // Password must be a valid bcrypt hash (auto-generated)
+        $this->assertStringStartsWith('$2y$', $user->password);
     }
 
     public function test_created_user_has_password_expiry_set(): void
@@ -93,13 +89,12 @@ class UserManagementTest extends TestCase
             'email' => 'jane@example.com',
             'role' => 'accountant',
             'status' => 'active',
-            'password' => 'SecurePass1!',
-            'password_confirmation' => 'SecurePass1!',
         ]);
 
         $user = User::where('email', 'jane@example.com')->first();
         $this->assertNotNull($user->password_expires_at);
-        $this->assertTrue($user->password_expires_at->isFuture());
+        // Admin-created users have expired password to force change on first login
+        $this->assertTrue($user->password_expires_at->isPast());
     }
 
     public function test_admin_can_update_user_role(): void
@@ -164,8 +159,6 @@ class UserManagementTest extends TestCase
                 'email' => 'jane@example.com',
                 'role' => 'accountant',
                 'status' => 'active',
-                'password' => 'SecurePass1!',
-                'password_confirmation' => 'SecurePass1!',
             ])
             ->assertForbidden();
     }

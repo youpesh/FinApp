@@ -39,10 +39,16 @@ class EmailController extends Controller
         ]);
 
         // Send the actual mail using Laravel's built-in mailer
-        Mail::raw($validated['body'], function ($message) use ($user, $validated) {
-            $message->to($user->email, $user->full_name)
-                ->subject($validated['subject']);
-        });
+        try {
+            Mail::raw($validated['body'], function ($message) use ($user, $validated) {
+                $message->to($user->email, $user->full_name)
+                    ->subject($validated['subject']);
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send internal email: ' . $e->getMessage());
+            return redirect()->route('admin.users.index')
+                ->with('error', "Email logged but failed to deliver: {$e->getMessage()}");
+        }
 
         return redirect()->route('admin.users.index')
             ->with('status', "Email sent to {$user->full_name} ({$user->email}) successfully.");

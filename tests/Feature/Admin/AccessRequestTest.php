@@ -25,6 +25,8 @@ class AccessRequestTest extends TestCase
             'first_name' => 'Alice',
             'last_name' => 'Wonderland',
             'email' => 'alice@example.com',
+            'security_question' => 'What is your pet name?',
+            'security_answer' => 'Buddy',
         ])->assertRedirect(route('login'));
 
         $this->assertDatabaseHas('user_access_requests', [
@@ -39,6 +41,8 @@ class AccessRequestTest extends TestCase
             'first_name' => 'Alice',
             'last_name' => 'Wonderland',
             'email' => 'alice@example.com',
+            'security_question' => 'What is your pet name?',
+            'security_answer' => \Illuminate\Support\Facades\Hash::make('buddy'),
             'status' => 'pending',
         ]);
 
@@ -46,6 +50,8 @@ class AccessRequestTest extends TestCase
             'first_name' => 'Alice',
             'last_name' => 'Wonderland',
             'email' => 'alice@example.com',
+            'security_question' => 'What is your pet name?',
+            'security_answer' => 'Buddy',
         ]);
 
         $response->assertSessionHasErrors('email');

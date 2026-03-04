@@ -18,6 +18,8 @@ class PasswordHistoryTest extends TestCase
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',
+            'security_question' => 'What is your pet name?',
+            'security_answer' => 'Buddy',
             'password' => 'SecurePass1!',
             'password_confirmation' => 'SecurePass1!',
         ]);
@@ -71,7 +73,7 @@ class PasswordHistoryTest extends TestCase
     public function test_password_expiry_is_extended_on_update(): void
     {
         $user = User::factory()->create([
-            'password_expires_at' => now()->subDay(), // expired
+            'password_expires_at' => now()->addDay(), // expiring soon, but not yet expired
         ]);
 
         PasswordHistory::create([
@@ -96,7 +98,7 @@ class PasswordHistoryTest extends TestCase
 
         $response = $this->actingAs($user)->get('/dashboard');
 
-        $response->assertRedirect(route('profile.edit'));
+        $response->assertRedirect(route('password.expired'));
     }
 
     public function test_non_expired_password_allows_dashboard_access(): void

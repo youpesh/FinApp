@@ -31,12 +31,21 @@ class UserAccessRequestController extends Controller
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'unique:user_access_requests,email,NULL,id,status,pending'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'address' => ['nullable', 'string', 'max:255'],
             'dob' => ['nullable', 'date'],
             'security_question' => ['required', 'string', 'max:255'],
             'security_answer' => ['required', 'string', 'max:255'],
         ]);
+
+        // Check if a pending request already exists for this email
+        $existingPending = UserAccessRequest::where('email', $validated['email'])
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($existingPending) {
+            return back()->withErrors(['email' => 'A pending access request already exists for this email address.'])->withInput();
+        }
 
         // Hash the security answer before storing
         $validated['security_answer'] = Hash::make(strtolower(trim($validated['security_answer'])));
@@ -44,10 +53,15 @@ class UserAccessRequestController extends Controller
         UserAccessRequest::create($validated);
 
         // Notify all admins about the new access request
-        $admins = User::where('role', 'admin')->where('status', 'active')->get();
-        $latestRequest = UserAccessRequest::where('email', $validated['email'])->latest()->first();
-        foreach ($admins as $admin) {
-            Mail::to($admin->email)->send(new NewAccessRequestNotification($latestRequest));
+        try {
+            $admins = User::where('role', 'admin')->where('status', 'active')->get();
+            $latestRequest = UserAccessRequest::where('email', $validated['email'])->latest()->first();
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new NewAccessRequestNotification($latestRequest));
+            }
+        } catch (\Exception $e) {
+            // Log the error but don't crash the request — the access request was saved
+            \Illuminate\Support\Facades\Log::error('Failed to send admin notification email: ' . $e->getMessage());
         }
 
         return redirect()->route('login')->with('status', 'Your access request has been submitted and is pending administrator approval.');
@@ -106,7 +120,11 @@ class UserAccessRequestController extends Controller
         ]);
 
         // Send approval email with login credentials
-        Mail::to($user->email)->send(new AccessRequestApproved($user, $temporaryPassword));
+        try {
+            Mail::to($user->email)->send(new AccessRequestApproved($user, $temporaryPassword));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send approval email: ' . $e->getMessage());
+        }
 
         return back()->with('status', "Request approved. User created with username: {$username}. An email with login credentials has been sent to {$user->email}.");
     }

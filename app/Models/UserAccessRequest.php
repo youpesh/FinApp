@@ -16,6 +16,8 @@ class UserAccessRequest extends Model
         'email',
         'address',
         'dob',
+        'security_question',
+        'security_answer',
         'status',
         'reviewed_by',
         'reviewed_at',
