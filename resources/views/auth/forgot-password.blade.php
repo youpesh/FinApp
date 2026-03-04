@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-sm text-gray-600 ">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>
 
@@ -24,11 +24,11 @@
         </div>
 
         <div class="mt-4 text-center">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ __('Or') }}</span>
+            <span class="text-sm text-gray-600 ">{{ __('Or') }}</span>
         </div>
 
         <div class="flex items-center justify-center mt-2">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            <a class="underline text-sm text-gray-600  hover:text-gray-900  rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
                 href="{{ route('password.security.identify') }}">
                 {{ __('Reset using Security Question') }}
             </a>

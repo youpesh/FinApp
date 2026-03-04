@@ -1,16 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('User Report') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-white  overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 ">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">All System Users</h3>
+                        <h3 class="text-lg font-bold text-gray-800 ">All System Users</h3>
                         <a href="{{ route('admin.reports.expired-passwords') }}"
                             class="text-indigo-600 hover:text-indigo-900 text-sm">
                             → View Expired Passwords Report
@@ -19,46 +19,46 @@
 
                     <div class="overflow-x-auto">
                         <table
-                            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                            <thead class="bg-gray-50 dark:bg-gray-700/50">
+                            class="min-w-full divide-y divide-gray-200  border border-gray-200  rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50 ">
                                 <tr>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Username</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Full Name</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Email</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Role</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Status</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Password Expires</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Failed Attempts</th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                         Last Login</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody class="bg-white  divide-y divide-gray-200 ">
                                 @forelse($users as $user)
                                     <tr
-                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors {{ $user->trashed() ? 'opacity-60' : '' }}">
-                                        <td class="px-4 py-3 text-sm font-mono text-gray-700 dark:text-gray-300">
+                                        class="hover:bg-gray-50  transition-colors {{ $user->trashed() ? 'opacity-60' : '' }}">
+                                        <td class="px-4 py-3 text-sm font-mono text-gray-700 ">
                                             {{ $user->username }}</td>
-                                        <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        <td class="px-4 py-3 text-sm font-medium text-gray-900 ">
                                             {{ $user->full_name }}</td>
-                                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ $user->email }}
+                                        <td class="px-4 py-3 text-sm text-gray-600 ">{{ $user->email }}
                                         </td>
-                                        <td class="px-4 py-3 text-sm capitalize text-gray-700 dark:text-gray-300">
+                                        <td class="px-4 py-3 text-sm capitalize text-gray-700 ">
                                             {{ $user->role }}</td>
                                         <td class="px-4 py-3 text-sm">
                                             @if($user->trashed())

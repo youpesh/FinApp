@@ -18,25 +18,25 @@
 </head>
 
 <body
-    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex p-6 lg:p-8 items-center justify-center min-h-screen flex-col font-sans antialiased">
+    class="bg-gray-50  text-gray-900  flex p-6 lg:p-8 items-center justify-center min-h-screen flex-col font-sans antialiased">
     <header class="w-full lg:max-w-5xl max-w-sm text-sm mb-12">
         @if (Route::has('login'))
             <nav class="flex items-center justify-end gap-4">
                 @auth
                     <a href="{{ url('/dashboard') }}"
-                        class="inline-block px-5 py-2 bg-indigo-600 text-white dark:bg-indigo-500 rounded-md font-medium transition hover:bg-indigo-700">
+                        class="inline-block px-5 py-2 bg-indigo-600 text-white  rounded-md font-medium transition hover:bg-indigo-700">
                         Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}"
-                        class="inline-block px-5 py-2 font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">
+                        class="inline-block px-5 py-2 font-medium text-gray-600  hover:text-gray-900  transition">
                         Log in
                     </a>
 
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}"
-                            class="inline-block px-5 py-2 bg-indigo-600 text-white dark:bg-indigo-500 rounded-md font-medium transition hover:bg-indigo-700 shadow-sm">
-                            Register
+                        <a href="{{ route('request.access') }}"
+                            class="inline-flex justify-center rounded-lg text-sm font-semibold py-3 px-6 bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm hover:shadow-md active:scale-95 transition-all w-full sm:w-auto">
+                            Request Access
                         </a>
                     @endif
                 @endauth
@@ -48,9 +48,9 @@
         <div class="mb-8">
             <img src="{{ asset('images/logo.png') }}" class="h-24 w-auto mx-auto" alt="Smart Finance Logo">
         </div>
-        <h1 class="text-4xl lg:text-5xl font-semibold tracking-tight mb-4 text-gray-900 dark:text-white">Welcome to
+        <h1 class="text-4xl lg:text-5xl font-semibold tracking-tight mb-4 text-gray-900 ">Welcome to
             Smart Finance</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-10 max-w-xl">
+        <p class="text-lg text-gray-600  leading-relaxed mb-10 max-w-xl">
             Modern, secure, and intuitive web-based accounting software designed to streamline your financial workflows
             and reporting.
         </p>
@@ -62,14 +62,14 @@
                     Sign In
                 </a>
                 <a href="{{ route('register') }}"
-                    class="px-8 py-3 bg-white text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">
+                    class="px-8 py-3 bg-white text-gray-900   border border-gray-200  rounded-lg font-medium hover:bg-gray-50  transition shadow-sm">
                     Request Access
                 </a>
             </div>
         @endguest
     </main>
 
-    <footer class="mt-auto pt-16 pb-4 text-sm text-gray-500 dark:text-gray-400">
+    <footer class="mt-auto pt-16 pb-4 text-sm text-gray-500 ">
         &copy; {{ date('Y') }} Smart Finance. All rights reserved.
     </footer>
 </body>

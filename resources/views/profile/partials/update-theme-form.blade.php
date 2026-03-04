@@ -1,9 +1,9 @@
 <section class="space-y-6" x-data="{ theme: localStorage.getItem('theme') || 'system' }">
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-lg font-medium text-gray-900 ">
             {{ __('Interface Theme') }}
         </h2>
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-600 ">
             {{ __('Customize the appearance of the application. Choose Light, Dark, or sync with your system.') }}
         </p>
     </header>
@@ -13,8 +13,8 @@
         <button type="button"
             @click="theme = 'light'; localStorage.setItem('theme', 'light'); document.documentElement.classList.remove('dark')"
             :class="theme === 'light' 
-                ? 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700 ring-1 ring-indigo-500/50' 
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700'"
+                ? 'bg-indigo-100 text-indigo-700 border-indigo-300    ring-1 ring-indigo-500/50' 
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50    '"
             class="flex items-center gap-2 px-4 py-2 border rounded-md font-semibold text-xs tracking-widest transition-all shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -27,8 +27,8 @@
         <button type="button"
             @click="theme = 'dark'; localStorage.setItem('theme', 'dark'); document.documentElement.classList.add('dark')"
             :class="theme === 'dark' 
-                ? 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700 ring-1 ring-indigo-500/50' 
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700'"
+                ? 'bg-indigo-100 text-indigo-700 border-indigo-300    ring-1 ring-indigo-500/50' 
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50    '"
             class="flex items-center gap-2 px-4 py-2 border rounded-md font-semibold text-xs tracking-widest transition-all shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -41,8 +41,8 @@
         <button type="button"
             @click="theme = 'system'; localStorage.removeItem('theme'); if(window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');"
             :class="theme === 'system' 
-                ? 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700 ring-1 ring-indigo-500/50' 
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700'"
+                ? 'bg-indigo-100 text-indigo-700 border-indigo-300    ring-1 ring-indigo-500/50' 
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50    '"
             class="flex items-center gap-2 px-4 py-2 border rounded-md font-semibold text-xs tracking-widest transition-all shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

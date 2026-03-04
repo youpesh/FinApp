@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-lg font-medium text-gray-900 ">
             {{ __('Profile Information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-600 ">
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
@@ -25,12 +25,12 @@
                         class="h-12 w-12 rounded-full object-cover">
                 @else
                     <div
-                        class="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-300">
+                        class="h-12 w-12 rounded-full bg-gray-200  flex items-center justify-center text-gray-500 ">
                         {{ substr($user->first_name, 0, 1) }}{{ substr($user->last_name, 0, 1) }}
                     </div>
                 @endif
                 <input type="file" id="profile_picture" name="profile_picture"
-                    class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/50 dark:file:text-indigo-300 dark:hover:file:bg-indigo-900/70" />
+                    class="block w-full text-sm text-gray-500  file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100   " />
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('profile_picture')" />
         </div>
@@ -55,17 +55,17 @@
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
+                    <p class="text-sm mt-2 text-gray-800 ">
                         {{ __('Your email address is unverified.') }}
 
                         <button form="send-verification"
-                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                            class="underline text-sm text-gray-600  hover:text-gray-900  rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
+                        <p class="mt-2 font-medium text-sm text-green-600 ">
                             {{ __('A new verification link has been sent to your email address.') }}
                         </p>
                     @endif
@@ -78,7 +78,7 @@
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
+                    class="text-sm text-gray-600 ">{{ __('Saved.') }}</p>
             @endif
         </div>
     </form>

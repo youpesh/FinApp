@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-sm text-gray-600 ">
         {{ __('Please answer the security question below to verify your identity.') }}
     </div>
 
@@ -11,7 +11,7 @@
         <div>
             <x-input-label :value="__('Security Question')" />
             <p
-                class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 rounded-md p-3">
+                class="mt-1 text-sm font-medium text-gray-900  bg-gray-50  rounded-md p-3">
                 {{ $security_question }}
             </p>
         </div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="flex items-center justify-between mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            <a class="underline text-sm text-gray-600  hover:text-gray-900  rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
                 href="{{ route('password.security.identify') }}">
                 {{ __('Start Over') }}
             </a>

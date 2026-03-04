@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-sm text-gray-600 ">
         {{ __('Your identity has been verified. Please enter your new password.') }}
     </div>
 
@@ -13,7 +13,7 @@
             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autofocus
                 autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-gray-500 ">
                 {{ __('Must be at least 8 characters, start with a letter, and include a number and special character.') }}
             </p>
         </div>

@@ -1,21 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-bold text-xl text-gray-800  leading-tight">
             Send Email to {{ $user->full_name }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-white  overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 ">
                     <div
-                        class="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                        class="mb-6 p-4 bg-gray-50  rounded-lg border border-gray-200 ">
+                        <p class="text-sm text-gray-700 ">
                             <span class="font-medium">To:</span> {{ $user->full_name }}
-                            — <span class="font-mono text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</span>
+                            — <span class="font-mono text-xs text-gray-500 ">{{ $user->email }}</span>
                         </p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p class="text-sm text-gray-600  mt-1">
                             <span class="font-medium">Username:</span> {{ $user->username }}
                             &nbsp;|&nbsp;
                             <span class="font-medium">Role:</span> {{ ucfirst($user->role) }}
@@ -36,7 +36,7 @@
                         <div class="mb-6">
                             <x-input-label for="body" :value="__('Message')" />
                             <textarea id="body" name="body" rows="8"
-                                class="block mt-1 w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                class="block mt-1 w-full border-gray-300    focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 required placeholder="Type your message here...">{{ old('body') }}</textarea>
                             <x-input-error :messages="$errors->get('body')" class="mt-2" />
                         </div>
@@ -51,9 +51,9 @@
                                 {{ __('Send Email') }}
                             </x-primary-button>
                             <a href="{{ route('admin.users.index') }}"
-                                class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition">Cancel</a>
+                                class="text-sm text-gray-600  hover:text-gray-900  transition">Cancel</a>
                             <a href="{{ route('admin.emails.history', $user) }}"
-                                class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200 ml-auto transition">
+                                class="text-sm text-indigo-600  hover:text-indigo-900  ml-auto transition">
                                 View Email History →
                             </a>
                         </div>

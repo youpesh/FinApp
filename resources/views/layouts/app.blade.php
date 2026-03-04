@@ -25,12 +25,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false }">
+<body class="font-sans antialiased bg-gray-100 " x-data="{ sidebarOpen: false }">
 
     <div class="flex h-screen overflow-hidden">
 
         <!-- ─── Sidebar ──────────────────────────────────────────── -->
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 dark:bg-gray-950 flex flex-col transition-transform duration-300 ease-in-out
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900  flex flex-col transition-transform duration-300 ease-in-out
                    lg:relative lg:translate-x-0 lg:flex lg:flex-shrink-0">
 
             <!-- Logo -->
@@ -185,26 +185,26 @@
 
             <!-- Top bar (mobile only) -->
             <header
-                class="lg:hidden flex items-center gap-4 px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                class="lg:hidden flex items-center gap-4 px-4 py-3 bg-white  border-b border-gray-200  shadow-sm">
                 <button @click="sidebarOpen = true"
-                    class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    class="p-2 rounded-md text-gray-500  hover:text-gray-700  hover:bg-gray-100  transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <span class="font-bold text-gray-800 dark:text-gray-100">Smart Finance</span>
+                <span class="font-bold text-gray-800 ">Smart Finance</span>
             </header>
 
             <!-- Page header slot -->
             @isset($header)
-                <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <div class="bg-white  border-b border-gray-200  px-6 py-4">
                     {{ $header }}
                 </div>
             @endisset
 
             <!-- Page content -->
-            <main class="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-900">
+            <main class="flex-1 overflow-y-auto bg-gray-100 ">
                 {{ $slot }}
             </main>
         </div>
