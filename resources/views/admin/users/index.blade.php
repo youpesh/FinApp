@@ -11,14 +11,12 @@
                 <div class="p-6 text-gray-900 ">
 
                     @if (session('status'))
-                        <div
-                            class="mb-4 font-medium text-sm text-green-600  bg-green-50  px-4 py-3 rounded-md">
+                        <div class="mb-4 font-medium text-sm text-green-600  bg-green-50  px-4 py-3 rounded-md">
                             {{ session('status') }}
                         </div>
                     @endif
                     @if (session('error'))
-                        <div
-                            class="mb-4 font-medium text-sm text-red-600  bg-red-50  px-4 py-3 rounded-md">
+                        <div class="mb-4 font-medium text-sm text-red-600  bg-red-50  px-4 py-3 rounded-md">
                             {{ session('error') }}
                         </div>
                     @endif
@@ -52,22 +50,6 @@
                         </form>
 
                         <div class="flex gap-2">
-                            <a href="{{ route('admin.reports.users') }}"
-                                class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-50  border border-indigo-200  rounded-md text-xs text-indigo-700  font-semibold hover:bg-indigo-100  transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                Reports
-                            </a>
-                            <a href="{{ route('admin.activity-logs.index') }}"
-                                class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50  border border-amber-200  rounded-md text-xs text-amber-800  font-semibold hover:bg-amber-100  transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                                Activity Log
-                            </a>
                             <a href="{{ route('admin.users.create') }}"
                                 class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-800  border border-transparent rounded-md font-semibold text-xs text-white  uppercase tracking-widest hover:bg-gray-700  transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,12 +88,10 @@
                             <tbody class="bg-white  divide-y divide-gray-200 ">
                                 @foreach($users as $user)
                                     <tr class="hover:bg-gray-50  transition-colors">
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap font-mono text-sm text-gray-700 ">
+                                        <td class="px-6 py-4 whitespace-nowrap font-mono text-sm text-gray-700 ">
                                             {{ $user->username }}
                                         </td>
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900  font-medium">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900  font-medium">
                                             {{ $user->full_name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 ">
