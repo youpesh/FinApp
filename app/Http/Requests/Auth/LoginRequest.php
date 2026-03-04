@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -43,9 +43,9 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         // Look up user for tracking failed attempts (but do NOT leak their status yet)
-        $user = User::where('email', $this->email)->first();
+        $user = User::where('username', $this->username)->first();
 
-        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             // Increment failed login attempts
@@ -63,7 +63,7 @@ class LoginRequest extends FormRequest
             }
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'username' => trans('auth.failed'),
             ]);
         }
 
@@ -71,21 +71,21 @@ class LoginRequest extends FormRequest
         if ($user->status === 'suspended') {
             Auth::logout();
             throw ValidationException::withMessages([
-                'email' => 'Your account has been suspended. Please contact an administrator.',
+                'username' => 'Your account has been suspended. Please contact an administrator.',
             ]);
         }
 
         if ($user->status === 'inactive') {
             Auth::logout();
             throw ValidationException::withMessages([
-                'email' => 'Your account has been deactivated.',
+                'username' => 'Your account has been deactivated.',
             ]);
         }
 
         if ($user->status === 'pending') {
             Auth::logout();
             throw ValidationException::withMessages([
-                'email' => 'Your account is pending administrator approval.',
+                'username' => 'Your account is pending administrator approval.',
             ]);
         }
 
@@ -108,7 +108,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'username' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -120,6 +120,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
+        return Str::transliterate(Str::lower($this->string('username')) . '|' . $this->ip());
     }
 }
