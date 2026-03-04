@@ -33,7 +33,7 @@
                         Log in
                     </a>
 
-                    @if (Route::has('register'))
+                    @if (Route::has('request.access'))
                         <a href="{{ route('request.access') }}"
                             class="inline-flex justify-center rounded-lg text-sm font-semibold py-3 px-6 bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm hover:shadow-md active:scale-95 transition-all w-full sm:w-auto">
                             Request Access
@@ -61,7 +61,7 @@
                     class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium shadow-sm hover:bg-indigo-700 transition">
                     Sign In
                 </a>
-                <a href="{{ route('register') }}"
+                <a href="{{ route('request.access') }}"
                     class="px-8 py-3 bg-white text-gray-900   border border-gray-200  rounded-lg font-medium hover:bg-gray-50  transition shadow-sm">
                     Request Access
                 </a>
