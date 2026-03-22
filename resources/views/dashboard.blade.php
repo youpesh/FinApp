@@ -29,8 +29,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @if (Auth::user()->isAdmin())
-                    <div
-                        class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
+                    <div class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
                         <h4 class="font-bold text-lg mb-3 text-gray-800 ">Admin Controls</h4>
                         <ul class="space-y-2">
                             <li><a href="{{ route('admin.users.index') }}"
@@ -73,8 +72,7 @@
                 @endif
 
                 @if (Auth::user()->isManager() || Auth::user()->isAdmin())
-                    <div
-                        class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
+                    <div class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
                         <h4 class="font-bold text-lg mb-3 text-gray-800 ">Manager Actions</h4>
                         <ul class="space-y-2">
                             <li class="text-gray-500 ">Review Journal Entries (Coming in Sprint 3)</li>
@@ -83,12 +81,17 @@
                     </div>
                 @endif
 
-                @if (Auth::user()->isAccountant() || Auth::user()->isAdmin())
-                    <div
-                        class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
-                        <h4 class="font-bold text-lg mb-3 text-gray-800 ">Accountant Actions</h4>
+                @if (Auth::user()->isAccountant() || Auth::user()->isAdmin() || Auth::user()->isManager())
+                    <div class="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 ">
+                        <h4 class="font-bold text-lg mb-3 text-gray-800 ">Accounting</h4>
                         <ul class="space-y-2">
-                            <li class="text-gray-500 ">Chart of Accounts (Coming in Sprint 2)</li>
+                            <li><a href="{{ route('accounts.index') }}"
+                                    class="flex items-center gap-2 text-indigo-600  hover:text-indigo-900  transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                    Chart of Accounts</a></li>
                             <li class="text-gray-500 ">Create Journal Entry (Coming in Sprint 3)</li>
                         </ul>
                     </div>

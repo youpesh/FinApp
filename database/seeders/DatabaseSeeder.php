@@ -114,6 +114,37 @@ class DatabaseSeeder extends Seeder
                 'message' => 'This entry is pending approval and cannot be modified.',
                 'severity' => 'warning',
             ],
+            // Sprint 2 – Chart of Accounts error messages
+            [
+                'code' => 'ACCT_NAME_DUP',
+                'message' => 'An account with this name already exists. Duplicate account names are not allowed.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'ACCT_NUM_DUP',
+                'message' => 'An account with this number already exists. Duplicate account numbers are not allowed.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'ACCT_NUM_INVALID',
+                'message' => 'Account number must be a whole number. Decimal spaces and alphanumeric values are not allowed.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'ACCT_NUM_RANGE',
+                'message' => 'Account number must start with the correct digit for its category (1=Asset, 2=Liability, 3=Equity, 4=Revenue, 5=Expense).',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'ACCT_DEACTIVATE_BALANCE',
+                'message' => 'Accounts with a balance greater than zero cannot be deactivated.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'ACCT_MONETARY_FORMAT',
+                'message' => 'All monetary values must have exactly two decimal places.',
+                'severity' => 'error',
+            ],
         ];
 
         foreach ($errorMessages as $error) {

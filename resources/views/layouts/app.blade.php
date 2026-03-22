@@ -63,7 +63,7 @@
 
                     <a href="{{ route('admin.users.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                               {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                                   {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -73,7 +73,7 @@
 
                     <a href="{{ route('admin.requests.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                               {{ request()->routeIs('admin.requests.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                                   {{ request()->routeIs('admin.requests.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -83,7 +83,7 @@
 
                     <a href="{{ route('admin.reports.users') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                               {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                                   {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -93,7 +93,7 @@
 
                     <a href="{{ route('admin.activity-logs.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                                               {{ request()->routeIs('admin.activity-logs.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                                                   {{ request()->routeIs('admin.activity-logs.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -117,19 +117,19 @@
                     </span>
                 @endif
 
-                @if(Auth::user()->isAccountant() || Auth::user()->isAdmin())
+                @if(Auth::user()->isAccountant() || Auth::user()->isAdmin() || Auth::user()->isManager())
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Accounting</p>
                     </div>
-                    <span
-                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 cursor-not-allowed">
+                    <a href="{{ route('accounts.index') }}" title="View and manage the chart of accounts"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                                                   {{ request()->routeIs('accounts.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                         </svg>
                         Chart of Accounts
-                        <span class="ml-auto text-xs text-gray-600 bg-gray-800 px-1.5 py-0.5 rounded">S2</span>
-                    </span>
+                    </a>
                 @endif
 
             </nav>
@@ -184,8 +184,7 @@
         <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
             <!-- Top bar (mobile only) -->
-            <header
-                class="lg:hidden flex items-center gap-4 px-4 py-3 bg-white  border-b border-gray-200  shadow-sm">
+            <header class="lg:hidden flex items-center gap-4 px-4 py-3 bg-white  border-b border-gray-200  shadow-sm">
                 <button @click="sidebarOpen = true"
                     class="p-2 rounded-md text-gray-500  hover:text-gray-700  hover:bg-gray-100  transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

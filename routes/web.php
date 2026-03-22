@@ -44,4 +44,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
 
+// Chart of Accounts – admin-only management (must be before wildcard routes)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('accounts/create', [\App\Http\Controllers\AccountController::class, 'create'])->name('accounts.create');
+    Route::post('accounts', [\App\Http\Controllers\AccountController::class, 'store'])->name('accounts.store');
+    Route::get('accounts/{account}/edit', [\App\Http\Controllers\AccountController::class, 'edit'])->name('accounts.edit');
+    Route::put('accounts/{account}', [\App\Http\Controllers\AccountController::class, 'update'])->name('accounts.update');
+    Route::patch('accounts/{account}/deactivate', [\App\Http\Controllers\AccountController::class, 'deactivate'])->name('accounts.deactivate');
+});
+
+// Chart of Accounts – view access for all authenticated users
+Route::middleware(['auth'])->group(function () {
+    Route::get('accounts', [\App\Http\Controllers\AccountController::class, 'index'])->name('accounts.index');
+    Route::get('accounts/{account}/event-log', [\App\Http\Controllers\AccountController::class, 'eventLog'])->name('accounts.event-log');
+    Route::get('accounts/{account}', [\App\Http\Controllers\AccountController::class, 'show'])->name('accounts.show');
+});
+
 require __DIR__ . '/auth.php';
