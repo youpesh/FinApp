@@ -27,7 +27,8 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('accounts.update', $account) }}" class="space-y-6">
+                    <form id="update-account-form" method="POST" action="{{ route('accounts.update', $account) }}"
+                        class="space-y-6">
                         @csrf
                         @method('PUT')
 
@@ -211,38 +212,36 @@
                                 <p class="mt-1 text-sm text-red-600 ">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        {{-- Actions --}}
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-200 ">
-                            {{-- Deactivate --}}
-                            @if($account->is_active && (float) $account->balance == 0)
-                                <form method="POST" action="{{ route('accounts.deactivate', $account) }}"
-                                    onsubmit="return confirm('Are you sure you want to deactivate this account?')">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit"
-                                        title="Deactivate this account (only allowed when balance is zero)"
-                                        class="px-4 py-2 text-sm font-medium text-red-600  hover:text-red-800  border border-red-300  rounded-md hover:bg-red-50  transition">
-                                        Deactivate Account
-                                    </button>
-                                </form>
-                            @else
-                                <div></div>
-                            @endif
-
-                            <div class="flex gap-3">
-                                <a href="{{ route('accounts.show', $account) }}"
-                                    title="Cancel and return to account detail"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700  hover:text-gray-900  transition">
-                                    Cancel
-                                </a>
-                                <button type="submit" title="Save changes to this account"
-                                    class="px-6 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition">
-                                    Update Account
-                                </button>
-                            </div>
-                        </div>
                     </form>
+
+                    {{-- Actions Container --}}
+                    <div class="flex items-center justify-between pt-6 mt-6 border-t border-gray-200">
+                        {{-- Deactivate Form --}}
+                        @if($account->is_active && (float) $account->balance == 0)
+                            <form method="POST" action="{{ route('accounts.deactivate', $account) }}"
+                                onsubmit="return confirm('Are you sure you want to deactivate this account?')">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" title="Deactivate this account (only allowed when balance is zero)"
+                                    class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 border border-red-300 rounded-md hover:bg-red-50 transition">
+                                    Deactivate Account
+                                </button>
+                            </form>
+                        @else
+                            <div></div>
+                        @endif
+
+                        <div class="flex gap-3">
+                            <a href="{{ route('accounts.show', $account) }}" title="Cancel and return to account detail"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition">
+                                Cancel
+                            </a>
+                            <button type="submit" form="update-account-form" title="Save changes to this account"
+                                class="px-6 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition">
+                                Update Account
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
