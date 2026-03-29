@@ -58,6 +58,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('accounts', [\App\Http\Controllers\AccountController::class, 'index'])->name('accounts.index');
     Route::get('accounts/{account}/event-log', [\App\Http\Controllers\AccountController::class, 'eventLog'])->name('accounts.event-log');
     Route::get('accounts/{account}', [\App\Http\Controllers\AccountController::class, 'show'])->name('accounts.show');
+
+    // Journal Entries
+    Route::resource('journal-entries', \App\Http\Controllers\JournalEntryController::class)->except(['edit', 'update', 'destroy']);
+    
+    // General Ledger
+    Route::get('ledger', [\App\Http\Controllers\LedgerController::class, 'index'])->name('ledger.index');
+    Route::get('ledger/{account}', [\App\Http\Controllers\LedgerController::class, 'show'])->name('ledger.show');
+
+    // Manager Approval
+    Route::middleware('role:manager,admin')->name('manager.')->prefix('manager')->group(function () {
+        Route::post('journal-entries/{journalEntry}/approve', [\App\Http\Controllers\ManagerApprovalController::class, 'approve'])->name('journal-entries.approve');
+        Route::post('journal-entries/{journalEntry}/reject', [\App\Http\Controllers\ManagerApprovalController::class, 'reject'])->name('journal-entries.reject');
+    });
 });
 
 require __DIR__ . '/auth.php';

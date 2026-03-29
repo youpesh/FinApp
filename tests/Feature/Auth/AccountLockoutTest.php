@@ -16,7 +16,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['status' => 'suspended']);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
@@ -28,7 +28,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['status' => 'inactive']);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
@@ -40,7 +40,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['status' => 'pending']);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
@@ -52,7 +52,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['failed_login_attempts' => 0]);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'wrong-password',
         ]);
 
@@ -64,7 +64,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['failed_login_attempts' => 2]);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'wrong-password',
         ]);
 
@@ -78,7 +78,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['failed_login_attempts' => 2]);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'wrong-password',
         ]);
 
@@ -90,7 +90,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['failed_login_attempts' => 2]);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
@@ -102,7 +102,7 @@ class AccountLockoutTest extends TestCase
         $user = User::factory()->create(['last_login_at' => null]);
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
@@ -132,10 +132,10 @@ class AccountLockoutTest extends TestCase
         // A non-existent email should show same error as a suspended account
         // (no enumeration — both get generic "failed" message on wrong password)
         $response = $this->post('/login', [
-            'email' => 'nobody@example.com',
+            'username' => 'nobody',
             'password' => 'password',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertSessionHasErrors('username');
     }
 }

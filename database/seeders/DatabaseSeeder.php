@@ -145,6 +145,22 @@ class DatabaseSeeder extends Seeder
                 'message' => 'All monetary values must have exactly two decimal places.',
                 'severity' => 'error',
             ],
+            // Sprint 3 - Journalizing Error Messages
+            [
+                'code' => 'DEBITS_BEFORE_CREDITS',
+                'message' => 'Debits must be entered before credits.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'MIN_DEBIT_CREDIT',
+                'message' => 'Each transaction must have at least one debit and one credit.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'INVALID_ACCOUNTS',
+                'message' => 'Journal entries can only use accounts found in the Chart of Accounts.',
+                'severity' => 'error',
+            ],
         ];
 
         foreach ($errorMessages as $error) {

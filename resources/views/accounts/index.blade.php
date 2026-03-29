@@ -175,8 +175,10 @@
                                     <td class="px-4 py-3 whitespace-nowrap font-mono text-sm text-gray-700 ">
                                         {{ $account->account_number }}
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                                        {{ $account->account_name }}
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900" onclick="event.stopPropagation()">
+                                        <a href="{{ route('ledger.show', $account) }}" title="View General Ledger for {{ $account->account_name }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            {{ $account->account_name }}
+                                        </a>
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600  capitalize">
                                         {{ $account->account_category }}

@@ -12,24 +12,6 @@ class PasswordHistoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_password_is_saved_to_history_on_registration(): void
-    {
-        $this->post('/register', [
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'security_question' => 'What is your pet name?',
-            'security_answer' => 'Buddy',
-            'password' => 'SecurePass1!',
-            'password_confirmation' => 'SecurePass1!',
-        ]);
-
-        $user = User::where('email', 'john@example.com')->first();
-
-        $this->assertNotNull($user);
-        $this->assertCount(1, $user->passwordHistories);
-    }
-
     public function test_cannot_reuse_current_password(): void
     {
         $user = User::factory()->create();

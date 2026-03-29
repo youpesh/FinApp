@@ -49,14 +49,14 @@ A comprehensive, modern accounting software system built with Laravel 11, featur
   - Emails persisted in `email_logs` table
 - **Activity Logging**: System-wide audit trail UI with before/after change tracking
 
-### Sprint 2: Chart of Accounts (Planned)
+### Sprint 2: Chart of Accounts ✅ COMPLETED
 - CRUD operations for accounts (Admin only)
 - Account validation and categorization
 - Event logging for account changes
 - Search and filtering functionality
 - Monetary value formatting
 
-### Sprint 3: Journal Entries & Ledger (Planned)
+### Sprint 3: Journal Entries & Ledger ✅ COMPLETED
 - Multi-debit/credit journal entry creation
 - Source document attachments (PDF, Word, Excel, CSV, JPG, PNG)
 - Manager approval workflow
@@ -266,8 +266,13 @@ Smart Finance/
   - [x] Internal email system (compose + per-user history)
   - [x] All 25 automated tests passing
   
-- [ ] **Sprint 2**: Chart of Accounts Module
-- [ ] **Sprint 3**: Journalizing & Ledger Module
+- [x] **Sprint 2**: Chart of Accounts Module ✅
+- [x] **Sprint 3**: Journalizing & Ledger Module ✅
+  - [x] Multi-debit/credit journal entry creation with dynamic rows
+  - [x] Strict validation (Debits before credits, Balanced entries)
+  - [x] Source document attachments
+  - [x] Manager approval workflow with mandated rejection reasons
+  - [x] General ledger calculation and post references
 - [ ] **Sprint 4**: Adjusting Entries & Financial Reports
 - [ ] **Sprint 5**: Dashboard & Financial Ratios
 
