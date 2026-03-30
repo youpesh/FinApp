@@ -18,47 +18,53 @@ class DatabaseSeeder extends Seeder
         $passwordService = new PasswordService();
 
         // Create admin user
-        $admin = User::create([
-            'username' => 'admin0126',
-            'first_name' => 'Admin',
-            'last_name' => 'User',
-            'email' => 'admin@finapp.com',
-            'password' => Hash::make('Admin123!'),
-            'role' => 'admin',
-            'status' => 'active',
-            'password_expires_at' => now()->addDays(90),
-        ]);
+        $admin = User::updateOrCreate(
+            ['username' => 'admin0126'],
+            [
+                'first_name' => 'Admin',
+                'last_name' => 'User',
+                'email' => 'admin@finapp.com',
+                'password' => Hash::make('Admin123!'),
+                'role' => 'admin',
+                'status' => 'active',
+                'password_expires_at' => now()->addDays(90),
+            ]
+        );
 
-        // Save password to history
+        // Save password to history (only if newly created or password changed)
         $passwordService->saveToHistory($admin, $admin->password);
 
         // Create a manager user
-        $manager = User::create([
-            'username' => 'msmith0126',
-            'first_name' => 'Manager',
-            'last_name' => 'Smith',
-            'email' => 'manager@finapp.com',
-            'password' => Hash::make('Manager123!'),
-            'role' => 'manager',
-            'status' => 'active',
-            'password_expires_at' => now()->addDays(90),
-            'created_by' => $admin->id,
-        ]);
+        $manager = User::updateOrCreate(
+            ['username' => 'msmith0126'],
+            [
+                'first_name' => 'Manager',
+                'last_name' => 'Smith',
+                'email' => 'manager@finapp.com',
+                'password' => Hash::make('Manager123!'),
+                'role' => 'manager',
+                'status' => 'active',
+                'password_expires_at' => now()->addDays(90),
+                'created_by' => $admin->id,
+            ]
+        );
 
         $passwordService->saveToHistory($manager, $manager->password);
 
         // Create an accountant user
-        $accountant = User::create([
-            'username' => 'ajones0126',
-            'first_name' => 'Accountant',
-            'last_name' => 'Jones',
-            'email' => 'accountant@finapp.com',
-            'password' => Hash::make('Account123!'),
-            'role' => 'accountant',
-            'status' => 'active',
-            'password_expires_at' => now()->addDays(90),
-            'created_by' => $admin->id,
-        ]);
+        $accountant = User::updateOrCreate(
+            ['username' => 'ajones0126'],
+            [
+                'first_name' => 'Accountant',
+                'last_name' => 'Jones',
+                'email' => 'accountant@finapp.com',
+                'password' => Hash::make('Account123!'),
+                'role' => 'accountant',
+                'status' => 'active',
+                'password_expires_at' => now()->addDays(90),
+                'created_by' => $admin->id,
+            ]
+        );
 
         $passwordService->saveToHistory($accountant, $accountant->password);
 
@@ -164,12 +170,12 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($errorMessages as $error) {
-            ErrorMessage::create($error);
+            ErrorMessage::updateOrCreate(['code' => $error['code']], $error);
         }
 
         $this->command->info('Database seeded successfully!');
-        $this->command->info('Admin credentials: admin@finapp.com / Admin123!');
-        $this->command->info('Manager credentials: manager@finapp.com / Manager123!');
-        $this->command->info('Accountant credentials: accountant@finapp.com / Account123!');
+        $this->command->info('Admin credentials: admin0126 / Admin123!');
+        $this->command->info('Manager credentials: msmith0126 / Manager123!');
+        $this->command->info('Accountant credentials: ajones0126 / Account123!');
     }
 }
