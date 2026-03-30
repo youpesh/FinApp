@@ -1,4 +1,12 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Chart of Accounts', 'url' => route('accounts.index')],
+            ['label' => $account->account_name, 'url' => route('accounts.show', $account)],
+            ['label' => 'History'],
+        ];
+    @endphp
     <x-slot name="header">
         <div class="flex items-center gap-3">
             <a href="{{ route('accounts.show', $account) }}" title="Back to account detail"

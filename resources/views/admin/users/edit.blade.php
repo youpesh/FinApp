@@ -1,4 +1,12 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Users', 'url' => route('admin.users.index')],
+            ['label' => $user->username],
+            ['label' => 'Edit'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Edit User: ') }} {{ $user->username }}

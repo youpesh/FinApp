@@ -1,4 +1,11 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Chart of Accounts', 'url' => route('accounts.index')],
+            ['label' => 'Add Account'],
+        ];
+    @endphp
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">

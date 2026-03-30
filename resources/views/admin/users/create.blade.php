@@ -1,4 +1,11 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Users', 'url' => route('admin.users.index')],
+            ['label' => 'Add User'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Create User') }}

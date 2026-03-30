@@ -1,4 +1,10 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Chart of Accounts'],
+        ];
+    @endphp
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-bold text-xl text-gray-800  leading-tight">
@@ -175,8 +181,11 @@
                                     <td class="px-4 py-3 whitespace-nowrap font-mono text-sm text-gray-700 ">
                                         {{ $account->account_number }}
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900" onclick="event.stopPropagation()">
-                                        <a href="{{ route('ledger.show', $account) }}" title="View General Ledger for {{ $account->account_name }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900"
+                                        onclick="event.stopPropagation()">
+                                        <a href="{{ route('ledger.show', $account) }}"
+                                            title="View General Ledger for {{ $account->account_name }}"
+                                            class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                             {{ $account->account_name }}
                                         </a>
                                     </td>
@@ -189,7 +198,7 @@
                                     <td class="px-4 py-3 whitespace-nowrap text-sm capitalize">
                                         <span
                                             class="px-2 py-0.5 rounded text-xs font-medium
-                                                {{ $account->normal_side === 'debit' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                                                    {{ $account->normal_side === 'debit' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
                                             {{ $account->normal_side }}
                                         </span>
                                     </td>

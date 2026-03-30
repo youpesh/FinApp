@@ -1,4 +1,11 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Reports', 'url' => '#'],
+            ['label' => 'Expired Passwords'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('Expired Passwords Report') }}

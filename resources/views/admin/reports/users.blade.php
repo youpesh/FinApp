@@ -1,4 +1,11 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Reports', 'url' => '#'],
+            ['label' => 'User Report'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('User Report') }}
@@ -53,13 +60,16 @@
                                     <tr
                                         class="hover:bg-gray-50  transition-colors {{ $user->trashed() ? 'opacity-60' : '' }}">
                                         <td class="px-4 py-3 text-sm font-mono text-gray-700 ">
-                                            {{ $user->username }}</td>
+                                            {{ $user->username }}
+                                        </td>
                                         <td class="px-4 py-3 text-sm font-medium text-gray-900 ">
-                                            {{ $user->full_name }}</td>
+                                            {{ $user->full_name }}
+                                        </td>
                                         <td class="px-4 py-3 text-sm text-gray-600 ">{{ $user->email }}
                                         </td>
                                         <td class="px-4 py-3 text-sm capitalize text-gray-700 ">
-                                            {{ $user->role }}</td>
+                                            {{ $user->role }}
+                                        </td>
                                         <td class="px-4 py-3 text-sm">
                                             @if($user->trashed())
                                                 <span

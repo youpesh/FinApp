@@ -1,4 +1,10 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Access Requests'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('Pending Access Requests') }}
@@ -11,14 +17,12 @@
                 <div class="p-6 text-gray-900 ">
 
                     @if (session('status'))
-                        <div
-                            class="mb-4 font-medium text-sm text-green-600  bg-green-50  px-4 py-3 rounded-md">
+                        <div class="mb-4 font-medium text-sm text-green-600  bg-green-50  px-4 py-3 rounded-md">
                             {{ session('status') }}
                         </div>
                     @endif
                     @if (session('error'))
-                        <div
-                            class="mb-4 font-medium text-sm text-red-600  bg-red-50  px-4 py-3 rounded-md">
+                        <div class="mb-4 font-medium text-sm text-red-600  bg-red-50  px-4 py-3 rounded-md">
                             {{ session('error') }}
                         </div>
                     @endif
@@ -44,21 +48,22 @@
                             <tbody class="bg-white  divide-y divide-gray-200 ">
                                 @forelse($requests as $req)
                                     <tr class="hover:bg-gray-50  transition-colors">
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                                            {{ $req->first_name }} {{ $req->last_name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
+                                            {{ $req->first_name }} {{ $req->last_name }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 ">
-                                            {{ $req->email }}</td>
+                                            {{ $req->email }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
-                                            {{ $req->created_at->format('Y-m-d H:i') }}</td>
+                                            {{ $req->created_at->format('Y-m-d H:i') }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center gap-3">
                                                 <!-- Approve Form -->
                                                 <form method="POST" action="{{ route('admin.requests.approve', $req) }}"
                                                     class="inline flex items-center gap-2">
                                                     @csrf
-                                                    <select name="role"
-                                                        class="text-xs border-gray-300    rounded-md"
+                                                    <select name="role" class="text-xs border-gray-300    rounded-md"
                                                         required>
                                                         <option value="accountant">Accountant</option>
                                                         <option value="manager">Manager</option>

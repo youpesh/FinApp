@@ -1,4 +1,10 @@
 <x-app-layout>
+    @php
+        $breadcrumbs = [
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Activity Log'],
+        ];
+    @endphp
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('Activity Log') }}
@@ -41,8 +47,7 @@
                                     <tr class="hover:bg-gray-50  transition-colors">
                                         <td class="px-4 py-3 text-xs text-gray-500  whitespace-nowrap">
                                             {{ $log->created_at->format('M d, Y g:i A') }}<br>
-                                            <span
-                                                class="text-gray-400 ">{{ $log->created_at->diffForHumans() }}</span>
+                                            <span class="text-gray-400 ">{{ $log->created_at->diffForHumans() }}</span>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
                                             @php
@@ -80,8 +85,7 @@
                                                             <span
                                                                 class="text-red-500 line-through">{{ Str::limit((string) $log->properties['old'][$key], 20) }}</span>
                                                             →
-                                                            <span
-                                                                class="text-green-600 ">{{ Str::limit((string) $value, 20) }}</span>
+                                                            <span class="text-green-600 ">{{ Str::limit((string) $value, 20) }}</span>
                                                         </div>
                                                     @endif
                                                 @endforeach
