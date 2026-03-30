@@ -1,10 +1,7 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Access Requests'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Access Requests'],
+    ]">
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('Pending Access Requests') }}

@@ -1,10 +1,7 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Journal Entries'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Journal Entries'],
+    ]">
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-xl text-gray-800 leading-tight">

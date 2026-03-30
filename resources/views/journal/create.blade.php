@@ -1,11 +1,8 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Journal Entries', 'url' => route('journal-entries.index')],
-            ['label' => 'Create Entry'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Journal Entries', 'url' => route('journal-entries.index')],
+        ['label' => 'Create Entry'],
+    ]">
     <x-slot name="header">
         <div class="flex items-center gap-4">
             <a href="{{ route('journal-entries.index') }}" class="text-gray-500 hover:text-gray-700">

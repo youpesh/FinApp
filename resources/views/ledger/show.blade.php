@@ -1,11 +1,8 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'General Ledger', 'url' => route('ledger.index')],
-            ['label' => $account->account_name],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'General Ledger', 'url' => route('ledger.index')],
+        ['label' => $account->account_name],
+    ]">
     <x-slot name="header">
         <div class="flex items-center gap-4">
             <a href="{{ route('ledger.index') }}" class="text-gray-500 hover:text-gray-700">

@@ -1,10 +1,7 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Activity Log'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Activity Log'],
+    ]">
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800  leading-tight">
             {{ __('Activity Log') }}

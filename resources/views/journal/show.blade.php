@@ -1,11 +1,8 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Journal Entries', 'url' => route('journal-entries.index')],
-            ['label' => $journalEntry->reference_id],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Journal Entries', 'url' => route('journal-entries.index')],
+        ['label' => $journalEntry->reference_id],
+    ]">
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-4">
@@ -78,7 +75,8 @@
                         </div>
                         <div class="ml-3">
                             <h3 class="text-sm font-medium text-red-800">Rejected by
-                                {{ $journalEntry->approver->full_name ?? 'Manager' }}</h3>
+                                {{ $journalEntry->approver->full_name ?? 'Manager' }}
+                            </h3>
                             <div class="mt-2 text-sm text-red-700">
                                 <p><strong>Reason:</strong> {{ $journalEntry->rejection_reason }}</p>
                             </div>
@@ -100,7 +98,8 @@
                             <div class="text-right">
                                 <p class="text-sm text-gray-500">Created by</p>
                                 <p class="font-medium text-indigo-600">
-                                    {{ $journalEntry->creator->full_name ?? 'Unknown User' }}</p>
+                                    {{ $journalEntry->creator->full_name ?? 'Unknown User' }}
+                                </p>
                             </div>
                         </div>
 
@@ -201,7 +200,8 @@
                                                 {{ $attachment->original_name }}
                                             </a>
                                             <p class="text-xs text-gray-500 mt-0.5">
-                                                {{ number_format($attachment->size / 1024, 1) }} KB</p>
+                                                {{ number_format($attachment->size / 1024, 1) }} KB
+                                            </p>
                                         </div>
                                     </li>
                                 @endforeach

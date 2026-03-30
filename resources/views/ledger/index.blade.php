@@ -1,10 +1,7 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'General Ledger'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'General Ledger'],
+    ]">
     <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800 leading-tight">
             {{ __('General Ledger') }}
@@ -24,9 +21,11 @@
                                 <div class="flex justify-between items-start mb-2">
                                     <div>
                                         <h4 class="font-bold text-gray-900 group-hover:text-indigo-600 transition">
-                                            {{ $account->account_number }}</h4>
+                                            {{ $account->account_number }}
+                                        </h4>
                                         <p class="text-sm font-medium text-gray-600 truncate max-w-[180px]">
-                                            {{ $account->account_name }}</p>
+                                            {{ $account->account_name }}
+                                        </p>
                                     </div>
                                     <span
                                         class="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded font-semibold">{{ $account->account_category }}</span>

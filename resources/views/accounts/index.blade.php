@@ -1,10 +1,7 @@
-<x-app-layout>
-    @php
-        $breadcrumbs = [
-            ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Chart of Accounts'],
-        ];
-    @endphp
+<x-app-layout :breadcrumbs="[
+        ['label' => 'Dashboard', 'url' => route('dashboard')],
+        ['label' => 'Chart of Accounts'],
+    ]">
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-bold text-xl text-gray-800  leading-tight">
@@ -198,7 +195,7 @@
                                     <td class="px-4 py-3 whitespace-nowrap text-sm capitalize">
                                         <span
                                             class="px-2 py-0.5 rounded text-xs font-medium
-                                                    {{ $account->normal_side === 'debit' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                                                        {{ $account->normal_side === 'debit' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
                                             {{ $account->normal_side }}
                                         </span>
                                     </td>
