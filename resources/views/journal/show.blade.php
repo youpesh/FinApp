@@ -226,7 +226,7 @@
                     <h3 class="text-lg font-bold text-gray-800 mb-2">Ledger Post References</h3>
                     <p class="text-sm text-gray-600 mb-4">This transaction has been successfully posted to the General
                         Ledger.</p>
-                    <a href="#" class="text-indigo-600 font-medium hover:underline flex items-center">
+                    <a href="{{ route('ledger.index') }}" class="text-indigo-600 font-medium hover:underline flex items-center">
                         View in General Ledger
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -102,9 +102,9 @@
                     </a>
                 @endif
 
-                @if(Auth::user()->isManager() || Auth::user()->isAdmin())
+                @if(Auth::user()->isAccountant() || Auth::user()->isManager() || Auth::user()->isAdmin())
                     <div class="pt-4 pb-1">
-                        <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Management</p>
+                        <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Journalizing</p>
                     </div>
                     <a href="{{ route('journal-entries.index') }}"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
@@ -222,6 +222,8 @@
         </div>
 
     </div>
+
+    @stack('scripts')
 </body>
 
 </html>
