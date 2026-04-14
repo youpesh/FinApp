@@ -25,7 +25,7 @@
                 @endif
             </div>
 
-            @if(Auth::user()->isManager() && $journalEntry->status === 'pending')
+            @if((Auth::user()->isManager() || Auth::user()->isAdmin()) && $journalEntry->status === 'pending')
                 <div class="flex gap-2">
                     <button type="button" onclick="document.getElementById('reject-modal').classList.remove('hidden')"
                         class="bg-red-50 text-red-700 px-4 py-2 border border-red-200 rounded-md hover:bg-red-100 transition shadow-sm font-medium text-sm">
@@ -239,7 +239,7 @@
     </div>
 
     <!-- Reject Modal -->
-    @if(Auth::user()->isManager() && $journalEntry->status === 'pending')
+    @if((Auth::user()->isManager() || Auth::user()->isAdmin()) && $journalEntry->status === 'pending')
         <div id="reject-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
             <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
                 <div class="mt-3">
