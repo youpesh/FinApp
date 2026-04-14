@@ -61,15 +61,45 @@ Route::middleware(['auth'])->group(function () {
 
     // Journal Entries
     Route::resource('journal-entries', \App\Http\Controllers\JournalEntryController::class)->except(['edit', 'update', 'destroy']);
-    
+
+    // Adjusting Journal Entries (Sprint 4)
+    Route::get('adjusting-entries', [\App\Http\Controllers\AdjustingEntryController::class, 'index'])->name('adjusting-entries.index');
+    Route::get('adjusting-entries/create', [\App\Http\Controllers\AdjustingEntryController::class, 'create'])->name('adjusting-entries.create');
+    Route::post('adjusting-entries', [\App\Http\Controllers\AdjustingEntryController::class, 'store'])->name('adjusting-entries.store');
+    Route::get('adjusting-entries/{adjustingEntry}', [\App\Http\Controllers\AdjustingEntryController::class, 'show'])
+        ->name('adjusting-entries.show');
+
     // General Ledger
     Route::get('ledger', [\App\Http\Controllers\LedgerController::class, 'index'])->name('ledger.index');
     Route::get('ledger/{account}', [\App\Http\Controllers\LedgerController::class, 'show'])->name('ledger.show');
+
+    // Financial Reports (Sprint 4)
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\ReportController::class, 'index'])->name('index');
+        Route::get('/trial-balance', [\App\Http\Controllers\ReportController::class, 'trialBalance'])->name('trial-balance');
+        Route::get('/income-statement', [\App\Http\Controllers\ReportController::class, 'incomeStatement'])->name('income-statement');
+        Route::get('/balance-sheet', [\App\Http\Controllers\ReportController::class, 'balanceSheet'])->name('balance-sheet');
+        Route::get('/retained-earnings', [\App\Http\Controllers\ReportController::class, 'retainedEarnings'])->name('retained-earnings');
+        Route::post('/save', [\App\Http\Controllers\ReportController::class, 'save'])->name('save');
+        Route::post('/email', [\App\Http\Controllers\ReportController::class, 'email'])->name('email');
+        Route::get('/pdf/{type}', [\App\Http\Controllers\ReportController::class, 'pdf'])->name('pdf');
+        Route::get('/snapshots/{financialReport}', [\App\Http\Controllers\ReportController::class, 'showSnapshot'])->name('snapshot.show');
+    });
+
+    // Notifications (Sprint 4)
+    Route::get('notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::post('notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
+
+    // Email from account page (Sprint 4)
+    Route::post('accounts/{account}/email', [\App\Http\Controllers\AccountController::class, 'email'])->name('accounts.email');
 
     // Manager Approval
     Route::middleware('role:manager,admin')->name('manager.')->prefix('manager')->group(function () {
         Route::post('journal-entries/{journalEntry}/approve', [\App\Http\Controllers\ManagerApprovalController::class, 'approve'])->name('journal-entries.approve');
         Route::post('journal-entries/{journalEntry}/reject', [\App\Http\Controllers\ManagerApprovalController::class, 'reject'])->name('journal-entries.reject');
+        Route::post('adjusting-entries/{journalEntry}/approve', [\App\Http\Controllers\ManagerApprovalController::class, 'approve'])->name('adjusting-entries.approve');
+        Route::post('adjusting-entries/{journalEntry}/reject', [\App\Http\Controllers\ManagerApprovalController::class, 'reject'])->name('adjusting-entries.reject');
     });
 });
 

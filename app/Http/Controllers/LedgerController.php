@@ -10,8 +10,18 @@ class LedgerController extends Controller
 {
     public function index(Request $request)
     {
-        // View summary of all accounts
-        $accounts = Account::orderBy('account_number')->get();
+        // View summary of all accounts, with optional search by name or number.
+        $query = Account::orderBy('account_number');
+
+        if ($request->filled('search')) {
+            $term = $request->search;
+            $query->where(function ($q) use ($term) {
+                $q->where('account_name', 'like', "%{$term}%")
+                  ->orWhere('account_number', 'like', "%{$term}%");
+            });
+        }
+
+        $accounts = $query->get();
 
         // Calculate current balance for each dynamically based on approved entries
         foreach ($accounts as $account) {

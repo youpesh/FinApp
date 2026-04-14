@@ -115,6 +115,16 @@
                         </svg>
                         Journal Entries
                     </a>
+
+                    <a href="{{ route('adjusting-entries.index') }}"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                                                           {{ request()->routeIs('adjusting-entries.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Adjusting Entries
+                    </a>
                 @endif
 
                 @if(Auth::user()->isAccountant() || Auth::user()->isAdmin() || Auth::user()->isManager())
@@ -140,6 +150,16 @@
                         </svg>
                         General Ledger
                     </a>
+
+                    <a href="{{ route('reports.index') }}" title="Financial reports"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                                                           {{ request()->routeIs('reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                        Financial Reports
+                    </a>
                 @endif
 
             </nav>
@@ -160,7 +180,8 @@
                         <p class="text-sm font-medium text-white truncate">{{ Auth::user()->full_name }}</p>
                         <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
                     </div>
-                    <div class="flex gap-1.5">
+                    <div class="flex gap-1.5 items-center">
+                        <x-notification-bell />
                         <a href="{{ route('profile.edit') }}" title="Profile"
                             class="p-1.5 rounded-md text-gray-500 hover:text-white hover:bg-gray-700 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

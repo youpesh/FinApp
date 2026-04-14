@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\AccountEventLog;
+use App\Models\EmailLog;
 use App\Models\ErrorMessage;
+use App\Models\User;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AccountController extends Controller
 {
@@ -91,7 +95,59 @@ class AccountController extends Controller
     {
         $account->load('creator', 'eventLogs.user');
 
-        return view('accounts.show', compact('account'));
+        $recipients = User::whereIn('role', ['manager', 'admin'])
+            ->where('status', 'active')
+            ->orderBy('first_name')
+            ->get(['id', 'first_name', 'last_name', 'email', 'role']);
+
+        return view('accounts.show', compact('account', 'recipients'));
+    }
+
+    /**
+     * Email a manager/admin from the account page. Uses the existing EmailLog +
+     * Mail::raw pattern from Admin\EmailController to keep the audit trail consistent.
+     */
+    public function email(Request $request, Account $account)
+    {
+        $validated = $request->validate([
+            'recipient_email' => ['required', 'email'],
+            'subject' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $recipient = User::where('email', $validated['recipient_email'])
+            ->whereIn('role', ['manager', 'admin'])
+            ->where('status', 'active')
+            ->first();
+
+        if (!$recipient) {
+            $msg = ErrorMessage::getByCode('EMAIL_RECIPIENT_INVALID')
+                ?? 'Recipient must be an active manager or administrator.';
+            return back()->withErrors(['recipient_email' => $msg])->withInput();
+        }
+
+        EmailLog::create([
+            'user_id' => $recipient->id,
+            'recipient' => $recipient->email,
+            'subject' => $validated['subject'],
+            'body' => "[Re: Account {$account->account_number} — {$account->account_name}]\n\n" . $validated['body'],
+            'sent_by' => auth()->id(),
+            'sent_at' => now(),
+        ]);
+
+        try {
+            Mail::raw($validated['body'], function ($message) use ($recipient, $validated) {
+                $message->to($recipient->email, $recipient->full_name)
+                    ->subject($validated['subject']);
+            });
+        } catch (\Exception $e) {
+            Log::error('Account email failed: ' . $e->getMessage());
+            return redirect()->route('accounts.show', $account)
+                ->with('error', "Email logged but delivery failed: {$e->getMessage()}");
+        }
+
+        return redirect()->route('accounts.show', $account)
+            ->with('status', "Email sent to {$recipient->full_name} ({$recipient->email}).");
     }
 
     /**

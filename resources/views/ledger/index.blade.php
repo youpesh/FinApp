@@ -14,6 +14,25 @@
                 <div class="p-6">
                     <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Select Account</h3>
 
+                    <form method="GET" action="{{ route('ledger.index') }}" class="flex items-end gap-3 mb-6">
+                        <div class="flex-1 max-w-md">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                placeholder="Account name or number..."
+                                class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                        </div>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700">Search</button>
+                        @if(request('search'))
+                            <a href="{{ route('ledger.index') }}"
+                                class="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">Clear</a>
+                        @endif
+                    </form>
+
+                    @if($accounts->isEmpty())
+                        <p class="text-sm text-gray-500 text-center py-8">No accounts match your search.</p>
+                    @endif
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($accounts as $account)
                             <a href="{{ route('ledger.show', $account) }}"

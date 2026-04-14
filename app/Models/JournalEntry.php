@@ -10,15 +10,35 @@ class JournalEntry extends Model
         'reference_id',
         'date',
         'description',
+        'is_adjusting',
         'status',
         'created_by',
         'approved_by',
         'rejection_reason',
+        'submitted_at',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'is_adjusting' => 'boolean',
+        'submitted_at' => 'datetime',
     ];
+
+    /**
+     * Only adjusting journal entries.
+     */
+    public function scopeAdjusting($query)
+    {
+        return $query->where('is_adjusting', true);
+    }
+
+    /**
+     * Only regular (non-adjusting) journal entries.
+     */
+    public function scopeRegular($query)
+    {
+        return $query->where('is_adjusting', false);
+    }
 
     public function lines()
     {

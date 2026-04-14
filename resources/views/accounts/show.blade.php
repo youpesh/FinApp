@@ -165,18 +165,81 @@
                 </div>
             </div>
 
-            {{-- Ledger placeholder (Sprint 3) --}}
-            <div class="bg-white  overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-center">
-                    <svg class="w-12 h-12 mx-auto text-gray-300 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900 ">Account Ledger</h3>
-                    <p class="mt-1 text-sm text-gray-500 ">The account ledger will be available in Sprint 3 (Journalizing & Ledger Module).</p>
+            {{-- Actions: View Ledger, Email Manager --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">Account Actions</h3>
+                        <p class="text-sm text-gray-500">View the ledger for this account or contact a manager/administrator.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{{ route('ledger.show', $account) }}"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition">
+                            View Ledger &rarr;
+                        </a>
+                        <button type="button" onclick="document.getElementById('account-email-modal').classList.remove('hidden')"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                            Email Manager/Admin
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            @if($errors->any())
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                    <ul class="list-disc pl-5 text-sm text-red-700">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+        </div>
+    </div>
+
+    {{-- Email modal --}}
+    <div id="account-email-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-6 border w-full max-w-lg shadow-lg rounded-md bg-white">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+                Email about <span class="text-indigo-600">{{ $account->account_name }} (#{{ $account->account_number }})</span>
+            </h3>
+            <form method="POST" action="{{ route('accounts.email', $account) }}">
+                @csrf
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Recipient (Manager or Admin)</label>
+                    <select name="recipient_email" required
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                        <option value="">Select recipient...</option>
+                        @foreach($recipients as $r)
+                            <option value="{{ $r->email }}" {{ old('recipient_email') === $r->email ? 'selected' : '' }}>
+                                {{ $r->first_name }} {{ $r->last_name }} — {{ $r->email }} ({{ $r->role }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input type="text" name="subject" required
+                        value="{{ old('subject', 'Question about account ' . $account->account_number . ' — ' . $account->account_name) }}"
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <textarea name="body" rows="5" required
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">{{ old('body') }}</textarea>
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('account-email-modal').classList.add('hidden')"
+                        class="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Cancel</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">Send</button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

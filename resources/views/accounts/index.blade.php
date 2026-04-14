@@ -175,8 +175,13 @@
                             @forelse($accounts as $account)
                                 <tr class="hover:bg-gray-50  transition-colors cursor-pointer"
                                     onclick="window.location='{{ route('accounts.show', $account) }}'">
-                                    <td class="px-4 py-3 whitespace-nowrap font-mono text-sm text-gray-700 ">
-                                        {{ $account->account_number }}
+                                    <td class="px-4 py-3 whitespace-nowrap font-mono text-sm"
+                                        onclick="event.stopPropagation()">
+                                        <a href="{{ route('ledger.show', $account) }}"
+                                            title="View General Ledger for {{ $account->account_name }}"
+                                            class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            {{ $account->account_number }}
+                                        </a>
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900"
                                         onclick="event.stopPropagation()">

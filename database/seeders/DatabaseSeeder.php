@@ -167,6 +167,27 @@ class DatabaseSeeder extends Seeder
                 'message' => 'Journal entries can only use accounts found in the Chart of Accounts.',
                 'severity' => 'error',
             ],
+            // Sprint 4 – Adjusting Entries & Financial Reports
+            [
+                'code' => 'REJECTION_REASON_REQUIRED',
+                'message' => 'A rejection reason is required when rejecting an adjusting journal entry.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'REPORT_DATE_RANGE_INVALID',
+                'message' => 'The end date of a report must be on or after the start date.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'EMAIL_RECIPIENT_INVALID',
+                'message' => 'Recipient must be an active manager or administrator.',
+                'severity' => 'error',
+            ],
+            [
+                'code' => 'AJE_PENDING_ONLY',
+                'message' => 'Only pending adjusting entries can be approved or rejected.',
+                'severity' => 'warning',
+            ],
         ];
 
         foreach ($errorMessages as $error) {

@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Attachment;
 use App\Models\ErrorMessage;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
-use App\Models\Account;
-use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class JournalEntryController extends Controller
+class AdjustingEntryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = JournalEntry::with(['creator', 'approver', 'lines'])
-            ->regular()
+        $query = JournalEntry::with(['creator', 'approver', 'lines.account'])
+            ->adjusting()
             ->orderBy('date', 'desc')
             ->orderBy('id', 'desc');
 
@@ -36,24 +35,25 @@ class JournalEntryController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('lines', function ($q) use ($search) {
-                $q->where('amount', 'like', "%{$search}%")
-                  ->orWhereHas('account', function ($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%");
-                  });
-            })->orWhere('reference_id', 'like', "%{$search}%");
+            $query->where(function ($outer) use ($search) {
+                $outer->whereHas('lines', function ($q) use ($search) {
+                    $q->where('amount', 'like', "%{$search}%")
+                      ->orWhereHas('account', function ($q2) use ($search) {
+                          $q2->where('account_name', 'like', "%{$search}%");
+                      });
+                })->orWhere('reference_id', 'like', "%{$search}%");
+            });
         }
 
         $entries = $query->paginate(15)->withQueryString();
 
-        return view('journal.index', compact('entries'));
+        return view('adjusting-entries.index', compact('entries'));
     }
 
     public function create()
     {
-        // Only active accounts from the chart of accounts
         $accounts = Account::where('is_active', true)->orderBy('account_number')->get();
-        return view('journal.create', compact('accounts'));
+        return view('adjusting-entries.create', compact('accounts'));
     }
 
     public function store(Request $request)
@@ -71,48 +71,50 @@ class JournalEntryController extends Controller
 
         $lines = collect($request->lines);
 
-        // Required Check 1: Min 1 Debit, Min 1 Credit
-        $hasDebit = $lines->contains('type', 'debit');
-        $hasCredit = $lines->contains('type', 'credit');
-        if (!$hasDebit || !$hasCredit) {
+        // Required: at least one debit and one credit
+        if (!$lines->contains('type', 'debit') || !$lines->contains('type', 'credit')) {
             throw ValidationException::withMessages([
-                'lines' => ErrorMessage::getByCode('MIN_DEBIT_CREDIT') ?? 'Each transaction must have at least one debit and one credit.'
+                'lines' => ErrorMessage::getByCode('MIN_DEBIT_CREDIT')
+                    ?? 'Each transaction must have at least one debit and one credit.',
             ]);
         }
 
-        // Required Check 2: Debits MUST come before credits
+        // Required: debits must come before credits
         $foundCredit = false;
         foreach ($lines as $line) {
             if ($line['type'] === 'credit') {
                 $foundCredit = true;
             } elseif ($line['type'] === 'debit' && $foundCredit) {
                 throw ValidationException::withMessages([
-                    'lines' => ErrorMessage::getByCode('DEBITS_BEFORE_CREDITS') ?? 'Debits must be entered before credits.'
+                    'lines' => ErrorMessage::getByCode('DEBITS_BEFORE_CREDITS')
+                        ?? 'Debits must be entered before credits.',
                 ]);
             }
         }
 
-        // Required Check 3: Total Debits == Total Credits
+        // Required: totals must balance
         $totalDebits = $lines->where('type', 'debit')->sum('amount');
         $totalCredits = $lines->where('type', 'credit')->sum('amount');
         if (round((float) $totalDebits, 2) !== round((float) $totalCredits, 2)) {
             throw ValidationException::withMessages([
-                'lines' => ErrorMessage::getByCode('DEBIT_CREDIT_MISMATCH') ?? 'Total debits must equal total credits.'
+                'lines' => ErrorMessage::getByCode('DEBIT_CREDIT_MISMATCH')
+                    ?? 'Total debits must equal total credits.',
             ]);
         }
 
         $entry = DB::transaction(function () use ($request, $lines) {
-            // Generate unique reference string eg: JE-2026-0001
             $year = date('Y', strtotime($request->date));
-            $count = JournalEntry::whereYear('date', $year)->count() + 1;
-            $referenceId = 'JE-' . $year . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+            $count = JournalEntry::adjusting()->whereYear('date', $year)->count() + 1;
+            $referenceId = 'AJE-' . $year . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
 
             $entry = JournalEntry::create([
                 'reference_id' => $referenceId,
                 'date' => $request->date,
                 'description' => $request->description,
+                'is_adjusting' => true,
                 'status' => 'pending',
                 'created_by' => auth()->id(),
+                'submitted_at' => now(),
             ]);
 
             foreach ($lines as $line) {
@@ -141,12 +143,35 @@ class JournalEntryController extends Controller
             return $entry;
         });
 
-        return redirect()->route('journal-entries.index')->with('success', 'Journal entry submitted for manager approval.');
+        // Notify managers (outside transaction so DB state is committed before mail sends)
+        NotificationService::notifyManagers([
+            'type' => 'adjusting_entry_submitted',
+            'title' => "New adjusting entry awaiting approval: {$entry->reference_id}",
+            'message' => sprintf(
+                "%s submitted adjusting journal entry %s on %s for \"%s\". Please review and approve or reject.",
+                auth()->user()->full_name,
+                $entry->reference_id,
+                $entry->date->format('M d, Y'),
+                $entry->description,
+            ),
+            'action_url' => route('adjusting-entries.show', $entry),
+            'data' => [
+                'entry_id' => $entry->id,
+                'reference_id' => $entry->reference_id,
+            ],
+        ]);
+
+        return redirect()
+            ->route('adjusting-entries.index')
+            ->with('success', "Adjusting entry {$entry->reference_id} submitted for manager approval.");
     }
 
-    public function show(JournalEntry $journalEntry)
+    public function show(JournalEntry $adjustingEntry)
     {
-        $journalEntry->load(['lines.account', 'attachments', 'creator', 'approver']);
-        return view('journal.show', compact('journalEntry'));
+        abort_unless($adjustingEntry->is_adjusting, 404);
+
+        $adjustingEntry->load(['lines.account', 'attachments', 'creator', 'approver']);
+
+        return view('adjusting-entries.show', ['journalEntry' => $adjustingEntry]);
     }
 }
