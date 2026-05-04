@@ -17,7 +17,7 @@
     </button>
 
     <div x-show="open" @click.outside="open = false" x-transition
-        class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg border border-gray-200 z-50" style="display: none;">
+        class="absolute left-0 bottom-full mb-2 w-80 bg-white rounded-md shadow-lg border border-gray-200 z-50" style="display: none;">
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
             <h3 class="text-sm font-bold text-gray-800">Notifications</h3>
             @if($unreadCount > 0)
