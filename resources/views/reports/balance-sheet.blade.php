@@ -39,6 +39,7 @@
                 @php
                     $hasYtd = abs($data['ytd_net_income']) >= 0.005;
                     $equityGroups = $data['equity_groups'] ?? [];
+                    $fmt = fn($v) => $v < 0 ? '(' . number_format(abs($v), 2) . ')' : number_format($v, 2);
                 @endphp
 
                 <div class="px-8 py-6 grid md:grid-cols-2 gap-12 font-serif text-gray-900">
@@ -56,8 +57,8 @@
                                             <td class="py-0.5 pl-4">
                                                 <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
                                             </td>
-                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? $fmt($group["subtotal"]) : '' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -89,8 +90,8 @@
                                             <td class="py-0.5 pl-4">
                                                 <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
                                             </td>
-                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? $fmt($group["subtotal"]) : '' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -115,15 +116,15 @@
                                                 <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
                                             </td>
                                             @php $isFinalRow = $loop->last && !($isLastEquityGroup && $hasYtd); @endphp
-                                            <td class="py-0.5 text-right font-mono {{ $isFinalRow ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                            <td class="py-0.5 text-right font-mono">{{ $isFinalRow ? number_format($subtotalWithNI, 2) : '' }}</td>
+                                            <td class="py-0.5 text-right font-mono {{ $isFinalRow ? 'border-t border-gray-900' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $isFinalRow ? $fmt($subtotalWithNI) : '' }}</td>
                                         </tr>
                                     @endforeach
                                     @if($isLastEquityGroup && $hasYtd)
                                         <tr>
                                             <td class="py-0.5 pl-4 italic text-gray-600">Current year net income</td>
-                                            <td class="py-0.5 text-right font-mono border-t border-gray-900">{{ number_format($data['ytd_net_income'], 2) }}</td>
-                                            <td class="py-0.5 text-right font-mono">{{ number_format($subtotalWithNI, 2) }}</td>
+                                            <td class="py-0.5 text-right font-mono border-t border-gray-900">{{ $fmt($data["ytd_net_income"]) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $fmt($subtotalWithNI) }}</td>
                                         </tr>
                                     @endif
                                 </tbody>

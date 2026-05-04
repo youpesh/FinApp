@@ -3,6 +3,7 @@
 @section('content')
     @php
         $hasYtd = abs($data['ytd_net_income']) >= 0.005;
+        $fmt = fn($v) => $v < 0 ? '(' . number_format(abs($v), 2) . ')' : number_format($v, 2);
     @endphp
 
     <table style="width:100%; border:0;">
@@ -15,8 +16,8 @@
                         @foreach($group['rows'] as $row)
                             <tr>
                                 <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? $fmt($group["subtotal"]) : '' }}</td>
                             </tr>
                         @endforeach
                     </table>
@@ -40,8 +41,8 @@
                         @foreach($group['rows'] as $row)
                             <tr>
                                 <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? $fmt($group["subtotal"]) : '' }}</td>
                             </tr>
                         @endforeach
                     </table>
@@ -58,15 +59,15 @@
                             @php $isFinalRow = $loop->last && !($isLastEquityGroup && $hasYtd); @endphp
                             <tr>
                                 <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $isFinalRow ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $isFinalRow ? number_format($subtotalWithNI, 2) : '' }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $isFinalRow ? 'border-top: 1px solid #111;' : '' }}">{{ $fmt($row["amount"]) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $isFinalRow ? $fmt($subtotalWithNI) : '' }}</td>
                             </tr>
                         @endforeach
                         @if($isLastEquityGroup && $hasYtd)
                             <tr>
                                 <td style="padding: 1px 0 1px 14px; border:0; font-style: italic; color:#555;">Current year net income</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border-top: 1px solid #111;">{{ number_format($data['ytd_net_income'], 2) }}</td>
-                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ number_format($subtotalWithNI, 2) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border-top: 1px solid #111;">{{ $fmt($data["ytd_net_income"]) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $fmt($subtotalWithNI) }}</td>
                             </tr>
                         @endif
                     </table>

@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Account;
 use App\Models\AccountEventLog;
-use App\Models\JournalEntry;
-use App\Models\JournalEntryLine;
 use App\Models\User;
 use App\Models\ErrorMessage;
 use App\Services\PasswordService;
@@ -199,33 +197,38 @@ class DatabaseSeeder extends Seeder
         }
 
         // ── Chart of Accounts ─────────────────────────────────────
+        // Numbers and balances mirror the "Lee Cage Plumbing Supplies" solved problem
+        // (Balance Sheet as 30 June 2012) shipped with the course materials.
         // 1xxxx = Asset, 2xxxx = Liability, 3xxxx = Equity, 4xxxx = Revenue, 5xxxx = Expense
         $accounts = [
-            // Assets
-            ['account_name' => 'Cash', 'account_number' => 10100, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 50000.00, 'balance' => 50000.00, 'statement' => 'BS', 'order' => 1],
-            ['account_name' => 'Accounts Receivable', 'account_number' => 10200, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 8000.00, 'balance' => 8000.00, 'statement' => 'BS', 'order' => 2],
-            ['account_name' => 'Office Supplies', 'account_number' => 10300, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 1200.00, 'balance' => 1200.00, 'statement' => 'BS', 'order' => 3],
-            ['account_name' => 'Prepaid Insurance', 'account_number' => 10400, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 2400.00, 'balance' => 2400.00, 'statement' => 'BS', 'order' => 4],
-            ['account_name' => 'Equipment', 'account_number' => 15100, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Fixed Assets', 'initial_balance' => 25000.00, 'balance' => 25000.00, 'statement' => 'BS', 'order' => 5],
-            ['account_name' => 'Accumulated Depreciation - Equipment', 'account_number' => 15200, 'normal_side' => 'credit', 'account_category' => 'asset', 'account_subcategory' => 'Fixed Assets', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'BS', 'order' => 6],
-            // Liabilities
-            ['account_name' => 'Accounts Payable', 'account_number' => 20100, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Current Liabilities', 'initial_balance' => 5000.00, 'balance' => 5000.00, 'statement' => 'BS', 'order' => 10],
-            ['account_name' => 'Wages Payable', 'account_number' => 20200, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Current Liabilities', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'BS', 'order' => 11],
-            ['account_name' => 'Unearned Revenue', 'account_number' => 20300, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Current Liabilities', 'initial_balance' => 3000.00, 'balance' => 3000.00, 'statement' => 'BS', 'order' => 12],
-            ['account_name' => 'Notes Payable', 'account_number' => 20400, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Long-Term Liabilities', 'initial_balance' => 10000.00, 'balance' => 10000.00, 'statement' => 'BS', 'order' => 13],
-            // Equity
-            ['account_name' => 'Common Stock', 'account_number' => 30100, 'normal_side' => 'credit', 'account_category' => 'equity', 'account_subcategory' => 'Equity', 'initial_balance' => 50000.00, 'balance' => 50000.00, 'statement' => 'BS', 'order' => 20],
-            ['account_name' => 'Retained Earnings', 'account_number' => 30200, 'normal_side' => 'credit', 'account_category' => 'equity', 'account_subcategory' => 'Equity', 'initial_balance' => 18600.00, 'balance' => 18600.00, 'statement' => 'RE', 'order' => 21],
-            // Revenue
-            ['account_name' => 'Service Revenue', 'account_number' => 40100, 'normal_side' => 'credit', 'account_category' => 'revenue', 'account_subcategory' => 'Operating Revenue', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 30],
-            ['account_name' => 'Interest Revenue', 'account_number' => 40200, 'normal_side' => 'credit', 'account_category' => 'revenue', 'account_subcategory' => 'Other Revenue', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 31],
-            // Expenses
-            ['account_name' => 'Wages Expense', 'account_number' => 50100, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 40],
-            ['account_name' => 'Rent Expense', 'account_number' => 50200, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 41],
-            ['account_name' => 'Utilities Expense', 'account_number' => 50300, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 42],
-            ['account_name' => 'Office Supplies Expense', 'account_number' => 50400, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 43],
-            ['account_name' => 'Insurance Expense', 'account_number' => 50500, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 44],
-            ['account_name' => 'Depreciation Expense', 'account_number' => 50600, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 45],
+            // Current Assets
+            ['account_name' => 'Cash at bank', 'account_number' => 10100, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 6500.00, 'balance' => 6500.00, 'statement' => 'BS', 'order' => 1],
+            ['account_name' => 'Cash on hand', 'account_number' => 10200, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 1200.00, 'balance' => 1200.00, 'statement' => 'BS', 'order' => 2],
+            ['account_name' => 'Debtors', 'account_number' => 10300, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 4000.00, 'balance' => 4000.00, 'statement' => 'BS', 'order' => 3],
+            ['account_name' => 'Inventory', 'account_number' => 10400, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Current Assets', 'initial_balance' => 7600.00, 'balance' => 7600.00, 'statement' => 'BS', 'order' => 4],
+            // Non-Current Assets
+            ['account_name' => 'Delivery vehicle', 'account_number' => 15100, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 22000.00, 'balance' => 22000.00, 'statement' => 'BS', 'order' => 5],
+            ['account_name' => 'Fixtures and fittings', 'account_number' => 15200, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 7800.00, 'balance' => 7800.00, 'statement' => 'BS', 'order' => 6],
+            ['account_name' => 'Office equipment', 'account_number' => 15300, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 4000.00, 'balance' => 4000.00, 'statement' => 'BS', 'order' => 7],
+            ['account_name' => 'Premises', 'account_number' => 15400, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 56000.00, 'balance' => 56000.00, 'statement' => 'BS', 'order' => 8],
+            ['account_name' => 'Furniture', 'account_number' => 15500, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 6000.00, 'balance' => 6000.00, 'statement' => 'BS', 'order' => 9],
+            ['account_name' => 'Investment - Telstra shares', 'account_number' => 15600, 'normal_side' => 'debit', 'account_category' => 'asset', 'account_subcategory' => 'Non-Current Assets', 'initial_balance' => 3500.00, 'balance' => 3500.00, 'statement' => 'BS', 'order' => 10],
+            // Current Liabilities
+            ['account_name' => 'Creditors', 'account_number' => 20100, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Current Liabilities', 'initial_balance' => 12000.00, 'balance' => 12000.00, 'statement' => 'BS', 'order' => 20],
+            ['account_name' => 'Loan (due 31/1/13)', 'account_number' => 20200, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Current Liabilities', 'initial_balance' => 8500.00, 'balance' => 8500.00, 'statement' => 'BS', 'order' => 21],
+            // Non-Current Liabilities
+            ['account_name' => 'Mortgage on premises', 'account_number' => 25100, 'normal_side' => 'credit', 'account_category' => 'liability', 'account_subcategory' => 'Non-Current Liabilities', 'initial_balance' => 40000.00, 'balance' => 40000.00, 'statement' => 'BS', 'order' => 25],
+            // Owner's Equity (Drawings is a contra-equity, debit-normal)
+            ['account_name' => 'Capital - Lee Cage', 'account_number' => 30100, 'normal_side' => 'credit', 'account_category' => 'equity', 'account_subcategory' => "Owner's Equity", 'initial_balance' => 58750.00, 'balance' => 58750.00, 'statement' => 'BS', 'order' => 30],
+            ['account_name' => 'Drawings - Lee Cage', 'account_number' => 30200, 'normal_side' => 'debit', 'account_category' => 'equity', 'account_subcategory' => "Owner's Equity", 'initial_balance' => 650.00, 'balance' => 650.00, 'statement' => 'BS', 'order' => 31],
+            ['account_name' => 'Retained Earnings', 'account_number' => 30900, 'normal_side' => 'credit', 'account_category' => 'equity', 'account_subcategory' => "Owner's Equity", 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'RE', 'order' => 39],
+            // Revenue / Expense scaffolding (kept so journal entries still have valid targets)
+            ['account_name' => 'Sales Revenue', 'account_number' => 40100, 'normal_side' => 'credit', 'account_category' => 'revenue', 'account_subcategory' => 'Operating Revenue', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 40],
+            ['account_name' => 'Service Revenue', 'account_number' => 40200, 'normal_side' => 'credit', 'account_category' => 'revenue', 'account_subcategory' => 'Operating Revenue', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 41],
+            ['account_name' => 'Wages Expense', 'account_number' => 50100, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 50],
+            ['account_name' => 'Rent Expense', 'account_number' => 50200, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 51],
+            ['account_name' => 'Utilities Expense', 'account_number' => 50300, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 52],
+            ['account_name' => 'Insurance Expense', 'account_number' => 50400, 'normal_side' => 'debit', 'account_category' => 'expense', 'account_subcategory' => 'Operating Expenses', 'initial_balance' => 0.00, 'balance' => 0.00, 'statement' => 'IS', 'order' => 53],
         ];
 
         $accountModels = [];
@@ -250,99 +253,14 @@ class DatabaseSeeder extends Seeder
             $accountModels[$acct->account_number] = $acct;
         }
 
-        // ── Approved Journal Entries (gives reports real data) ────
-        $journalData = [
-            [
-                'ref' => 'JE-2026-0001', 'date' => '2026-01-15',
-                'desc' => 'Received payment for consulting services',
-                'lines' => [
-                    ['acct' => 10100, 'type' => 'debit', 'amount' => 12000.00],
-                    ['acct' => 40100, 'type' => 'credit', 'amount' => 12000.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0002', 'date' => '2026-01-31',
-                'desc' => 'Paid monthly office rent',
-                'lines' => [
-                    ['acct' => 50200, 'type' => 'debit', 'amount' => 2500.00],
-                    ['acct' => 10100, 'type' => 'credit', 'amount' => 2500.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0003', 'date' => '2026-02-10',
-                'desc' => 'Paid employee wages for January',
-                'lines' => [
-                    ['acct' => 50100, 'type' => 'debit', 'amount' => 4500.00],
-                    ['acct' => 10100, 'type' => 'credit', 'amount' => 4500.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0004', 'date' => '2026-02-15',
-                'desc' => 'Billed client for web development project',
-                'lines' => [
-                    ['acct' => 10200, 'type' => 'debit', 'amount' => 8500.00],
-                    ['acct' => 40100, 'type' => 'credit', 'amount' => 8500.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0005', 'date' => '2026-02-28',
-                'desc' => 'Paid utilities for February',
-                'lines' => [
-                    ['acct' => 50300, 'type' => 'debit', 'amount' => 350.00],
-                    ['acct' => 10100, 'type' => 'credit', 'amount' => 350.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0006', 'date' => '2026-03-01',
-                'desc' => 'Collected on accounts receivable',
-                'lines' => [
-                    ['acct' => 10100, 'type' => 'debit', 'amount' => 5000.00],
-                    ['acct' => 10200, 'type' => 'credit', 'amount' => 5000.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0007', 'date' => '2026-03-15',
-                'desc' => 'Earned interest on business savings account',
-                'lines' => [
-                    ['acct' => 10100, 'type' => 'debit', 'amount' => 150.00],
-                    ['acct' => 40200, 'type' => 'credit', 'amount' => 150.00],
-                ],
-            ],
-            [
-                'ref' => 'JE-2026-0008', 'date' => '2026-03-31',
-                'desc' => 'Paid monthly office rent for March',
-                'lines' => [
-                    ['acct' => 50200, 'type' => 'debit', 'amount' => 2500.00],
-                    ['acct' => 10100, 'type' => 'credit', 'amount' => 2500.00],
-                ],
-            ],
-        ];
-
-        foreach ($journalData as $jd) {
-            $entry = JournalEntry::updateOrCreate(
-                ['reference_id' => $jd['ref']],
-                [
-                    'date' => $jd['date'],
-                    'description' => $jd['desc'],
-                    'is_adjusting' => false,
-                    'status' => 'approved',
-                    'created_by' => $accountant->id,
-                    'approved_by' => $manager->id,
-                ]
-            );
-
-            foreach ($jd['lines'] as $line) {
-                JournalEntryLine::updateOrCreate(
-                    ['journal_entry_id' => $entry->id, 'account_id' => $accountModels[$line['acct']]->id, 'type' => $line['type']],
-                    ['amount' => $line['amount']]
-                );
-            }
-        }
+        // No demo journal entries — the Lee Cage solved problem only specifies
+        // opening balances. Reports should match the textbook balance sheet
+        // exactly, so transactions are left for the user to enter.
 
         $this->command->info('Database seeded successfully!');
         $this->command->info('Admin credentials: admin0126 / Admin123!');
         $this->command->info('Manager credentials: msmith0126 / Manager123!');
         $this->command->info('Accountant credentials: ajones0126 / Account123!');
-        $this->command->info('Seeded: ' . count($accounts) . ' accounts, ' . count($journalData) . ' approved journal entries');
+        $this->command->info('Seeded: ' . count($accounts) . ' accounts (Lee Cage Plumbing Supplies opening balances)');
     }
 }

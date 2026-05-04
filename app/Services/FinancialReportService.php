@@ -149,9 +149,9 @@ class FinancialReportService
         $liabilityAccounts = Account::active()->where('account_category', 'liability')->orderBy('account_number')->get();
         $equityAccounts = Account::active()->where('account_category', 'equity')->orderBy('account_number')->get();
 
-        [$assetRows, $totalAssets, $assetGroups] = $this->balancesFor($assetAccounts, $asOf);
-        [$liabilityRows, $totalLiabilities, $liabilityGroups] = $this->balancesFor($liabilityAccounts, $asOf);
-        [$equityRows, $totalEquity, $equityGroups] = $this->balancesFor($equityAccounts, $asOf);
+        [$assetRows, $totalAssets, $assetGroups] = $this->balancesFor($assetAccounts, $asOf, 'debit');
+        [$liabilityRows, $totalLiabilities, $liabilityGroups] = $this->balancesFor($liabilityAccounts, $asOf, 'credit');
+        [$equityRows, $totalEquity, $equityGroups] = $this->balancesFor($equityAccounts, $asOf, 'credit');
 
         // Net income from start of year through $asOf is implicitly included in equity only if
         // closing entries have been made. To make BS balance before closing, add YTD net income
@@ -229,25 +229,29 @@ class FinancialReportService
 
     // ── helpers ──────────────────────────────────────────────────────
 
-    private function balancesFor(Collection $accounts, Carbon $asOf): array
+    private function balancesFor(Collection $accounts, Carbon $asOf, string $naturalSide = 'debit'): array
     {
         $rows = [];
         $groups = [];
         $total = 0.0;
         foreach ($accounts as $account) {
-            $balance = round($this->accountBalanceAsOf($account, $asOf), 2);
-            if (abs($balance) < 0.005) continue;
-            $total += $balance;
+            $raw = round($this->accountBalanceAsOf($account, $asOf), 2);
+            // Contra accounts (normal_side opposite the section's natural side) reduce the section total.
+            $isContra = strtolower($account->normal_side) !== $naturalSide;
+            $effective = $isContra ? -$raw : $raw;
+            if (abs($effective) < 0.005) continue;
+            $total += $effective;
             $row = [
                 'account_id' => $account->id,
                 'account_number' => $account->account_number,
                 'account_name' => $account->account_name,
-                'amount' => $balance,
+                'amount' => $effective,
+                'is_contra' => $isContra,
             ];
             $rows[] = $row;
             $sub = $account->account_subcategory ?: 'Other';
             $groups[$sub]['rows'][] = $row;
-            $groups[$sub]['subtotal'] = round(($groups[$sub]['subtotal'] ?? 0.0) + $balance, 2);
+            $groups[$sub]['subtotal'] = round(($groups[$sub]['subtotal'] ?? 0.0) + $effective, 2);
         }
 
         $groupList = [];
