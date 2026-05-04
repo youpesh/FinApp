@@ -35,83 +35,108 @@
                 @if(!$data['balanced'])
                     <p class="px-6 pt-2 text-sm text-red-600 font-semibold">Warning: Balance sheet does not balance.</p>
                 @endif
-                <div class="px-6 py-5 grid md:grid-cols-2 gap-8">
-                    <!-- Assets -->
+
+                @php
+                    $hasYtd = abs($data['ytd_net_income']) >= 0.005;
+                    $equityGroups = $data['equity_groups'] ?? [];
+                @endphp
+
+                <div class="px-8 py-6 grid md:grid-cols-2 gap-12 font-serif text-gray-900">
+                    {{-- ASSETS (left column of the T) --}}
                     <div>
-                        <h4 class="font-semibold text-gray-700 border-b pb-1 mb-2">Assets</h4>
-                        <table class="min-w-full">
-                            <tbody>
-                                @forelse($data['assets'] as $row)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="py-1 text-sm text-gray-500 w-20">{{ $row['account_number'] }}</td>
-                                        <td class="py-1 text-sm">
-                                            <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                        </td>
-                                        <td class="py-1 text-right font-mono text-sm w-32">${{ number_format($row['amount'], 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="3" class="py-2 text-sm text-gray-500">No assets.</td></tr>
-                                @endforelse
-                                <tr class="border-t-2 border-gray-900 font-bold">
-                                    <td colspan="2" class="py-2 text-right text-gray-700">Total Assets</td>
-                                    <td class="py-2 text-right font-mono">${{ number_format($data['total_assets'], 2) }}</td>
-                                </tr>
-                            </tbody>
+                        @forelse($data['asset_groups'] ?? [] as $group)
+                            <p class="italic font-semibold mb-1">{{ $group['subcategory'] }}</p>
+                            <table class="w-full text-sm mb-4">
+                                <colgroup>
+                                    <col><col class="w-24"><col class="w-24">
+                                </colgroup>
+                                <tbody>
+                                    @foreach($group['rows'] as $row)
+                                        <tr>
+                                            <td class="py-0.5 pl-4">
+                                                <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
+                                            </td>
+                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @empty
+                            <p class="text-sm text-gray-500">No assets.</p>
+                        @endforelse
+
+                        <table class="w-full text-sm font-bold mt-2">
+                            <colgroup><col><col class="w-24"></colgroup>
+                            <tr>
+                                <td class="pt-2">Total Assets</td>
+                                <td class="pt-2 text-right font-mono" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding-bottom: 2px;">{{ number_format($data['total_assets'], 2) }}</td>
+                            </tr>
                         </table>
                     </div>
 
-                    <!-- Liabilities + Equity -->
+                    {{-- LIABILITIES + EQUITY (right column of the T) --}}
                     <div>
-                        <h4 class="font-semibold text-gray-700 border-b pb-1 mb-2">Liabilities</h4>
-                        <table class="min-w-full mb-4">
-                            <tbody>
-                                @forelse($data['liabilities'] as $row)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="py-1 text-sm text-gray-500 w-20">{{ $row['account_number'] }}</td>
-                                        <td class="py-1 text-sm">
-                                            <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                        </td>
-                                        <td class="py-1 text-right font-mono text-sm w-32">${{ number_format($row['amount'], 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="3" class="py-2 text-sm text-gray-500">No liabilities.</td></tr>
-                                @endforelse
-                                <tr class="border-t font-semibold">
-                                    <td colspan="2" class="py-1 text-right">Total Liabilities</td>
-                                    <td class="py-1 text-right font-mono">${{ number_format($data['total_liabilities'], 2) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        @foreach($data['liability_groups'] ?? [] as $group)
+                            <p class="italic font-semibold mb-1">{{ $group['subcategory'] }}</p>
+                            <table class="w-full text-sm mb-4">
+                                <colgroup>
+                                    <col><col class="w-24"><col class="w-24">
+                                </colgroup>
+                                <tbody>
+                                    @foreach($group['rows'] as $row)
+                                        <tr>
+                                            <td class="py-0.5 pl-4">
+                                                <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
+                                            </td>
+                                            <td class="py-0.5 text-right font-mono {{ $loop->last ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endforeach
 
-                        <h4 class="font-semibold text-gray-700 border-b pb-1 mb-2">Equity</h4>
-                        <table class="min-w-full mb-4">
-                            <tbody>
-                                @forelse($data['equity'] as $row)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="py-1 text-sm text-gray-500 w-20">{{ $row['account_number'] }}</td>
-                                        <td class="py-1 text-sm">
-                                            <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                        </td>
-                                        <td class="py-1 text-right font-mono text-sm w-32">${{ number_format($row['amount'], 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="3" class="py-2 text-sm text-gray-500">No equity accounts.</td></tr>
-                                @endforelse
-                                <tr>
-                                    <td colspan="2" class="py-1 text-sm text-gray-500 italic">Current year net income</td>
-                                    <td class="py-1 text-right font-mono text-sm">${{ number_format($data['ytd_net_income'], 2) }}</td>
-                                </tr>
-                                <tr class="border-t font-semibold">
-                                    <td colspan="2" class="py-1 text-right">Total Equity</td>
-                                    <td class="py-1 text-right font-mono">${{ number_format($data['total_equity'] + $data['ytd_net_income'], 2) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        @foreach($equityGroups as $eqGroup)
+                            @php
+                                $isLastEquityGroup = $loop->last;
+                                $rowsWithNI = $eqGroup['rows'];
+                                $subtotalWithNI = $eqGroup['subtotal'] + ($isLastEquityGroup && $hasYtd ? $data['ytd_net_income'] : 0);
+                            @endphp
+                            <p class="italic font-semibold mb-1">{{ $eqGroup['subcategory'] }}</p>
+                            <table class="w-full text-sm mb-4">
+                                <colgroup>
+                                    <col><col class="w-24"><col class="w-24">
+                                </colgroup>
+                                <tbody>
+                                    @foreach($rowsWithNI as $row)
+                                        <tr>
+                                            <td class="py-0.5 pl-4">
+                                                <a href="{{ route('ledger.show', $row['account_id']) }}" class="hover:underline">{{ $row['account_name'] }}</a>
+                                            </td>
+                                            @php $isFinalRow = $loop->last && !($isLastEquityGroup && $hasYtd); @endphp
+                                            <td class="py-0.5 text-right font-mono {{ $isFinalRow ? 'border-t border-gray-900' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ $isFinalRow ? number_format($subtotalWithNI, 2) : '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                    @if($isLastEquityGroup && $hasYtd)
+                                        <tr>
+                                            <td class="py-0.5 pl-4 italic text-gray-600">Current year net income</td>
+                                            <td class="py-0.5 text-right font-mono border-t border-gray-900">{{ number_format($data['ytd_net_income'], 2) }}</td>
+                                            <td class="py-0.5 text-right font-mono">{{ number_format($subtotalWithNI, 2) }}</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        @endforeach
 
-                        <div class="border-t-2 border-gray-900 pt-2 flex justify-between font-bold">
-                            <span>Total Liabilities + Equity</span>
-                            <span class="font-mono">${{ number_format($data['total_liabilities_and_equity'], 2) }}</span>
-                        </div>
+                        <table class="w-full text-sm font-bold mt-2">
+                            <colgroup><col><col class="w-24"></colgroup>
+                            <tr>
+                                <td class="pt-2">Total Equities</td>
+                                <td class="pt-2 text-right font-mono" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding-bottom: 2px;">{{ number_format($data['total_liabilities_and_equity'], 2) }}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

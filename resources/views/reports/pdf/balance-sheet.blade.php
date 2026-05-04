@@ -1,62 +1,88 @@
 @extends('reports.pdf._layout')
 
 @section('content')
-    <div class="section-title">Assets</div>
-    <table>
-        @foreach($data['assets'] as $row)
-            <tr>
-                <td style="width: 15%;">{{ $row['account_number'] }}</td>
-                <td>{{ $row['account_name'] }}</td>
-                <td class="text-right font-mono" style="width: 20%;">${{ number_format($row['amount'], 2) }}</td>
-            </tr>
-        @endforeach
-        <tr class="totals">
-            <td colspan="2" class="text-right">Total Assets</td>
-            <td class="text-right font-mono">${{ number_format($data['total_assets'], 2) }}</td>
+    @php
+        $hasYtd = abs($data['ytd_net_income']) >= 0.005;
+    @endphp
+
+    <table style="width:100%; border:0;">
+        <tr style="vertical-align: top;">
+            {{-- ASSETS column --}}
+            <td style="width: 50%; padding-right: 18px; border:0;">
+                @forelse($data['asset_groups'] ?? [] as $group)
+                    <div style="font-style: italic; font-weight: bold; margin: 6px 0 2px 0;">{{ $group['subcategory'] }}</div>
+                    <table style="width:100%; border-collapse: collapse;">
+                        @foreach($group['rows'] as $row)
+                            <tr>
+                                <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                @empty
+                    <em>No assets.</em>
+                @endforelse
+
+                <table style="width:100%; margin-top: 10px; border-collapse: collapse;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 4px 0; border:0;">Total Assets</td>
+                        <td class="text-right font-mono" style="width: 25%; font-weight: bold; padding: 4px 0; border-top: 1px solid #111; border-bottom: 3px double #111;">{{ number_format($data['total_assets'], 2) }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            {{-- LIABILITIES + EQUITY column --}}
+            <td style="width: 50%; padding-left: 18px; border:0;">
+                @foreach($data['liability_groups'] ?? [] as $group)
+                    <div style="font-style: italic; font-weight: bold; margin: 6px 0 2px 0;">{{ $group['subcategory'] }}</div>
+                    <table style="width:100%; border-collapse: collapse;">
+                        @foreach($group['rows'] as $row)
+                            <tr>
+                                <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $loop->last ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $loop->last ? number_format($group['subtotal'], 2) : '' }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                @endforeach
+
+                @foreach($data['equity_groups'] ?? [] as $eqGroup)
+                    @php
+                        $isLastEquityGroup = $loop->last;
+                        $subtotalWithNI = $eqGroup['subtotal'] + ($isLastEquityGroup && $hasYtd ? $data['ytd_net_income'] : 0);
+                    @endphp
+                    <div style="font-style: italic; font-weight: bold; margin: 6px 0 2px 0;">{{ $eqGroup['subcategory'] }}</div>
+                    <table style="width:100%; border-collapse: collapse;">
+                        @foreach($eqGroup['rows'] as $row)
+                            @php $isFinalRow = $loop->last && !($isLastEquityGroup && $hasYtd); @endphp
+                            <tr>
+                                <td style="padding: 1px 0 1px 14px; border:0;">{{ $row['account_name'] }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border:0; {{ $isFinalRow ? 'border-top: 1px solid #111;' : '' }}">{{ number_format($row['amount'], 2) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ $isFinalRow ? number_format($subtotalWithNI, 2) : '' }}</td>
+                            </tr>
+                        @endforeach
+                        @if($isLastEquityGroup && $hasYtd)
+                            <tr>
+                                <td style="padding: 1px 0 1px 14px; border:0; font-style: italic; color:#555;">Current year net income</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0; border-top: 1px solid #111;">{{ number_format($data['ytd_net_income'], 2) }}</td>
+                                <td class="text-right font-mono" style="width: 25%; padding: 1px 0 1px 6px; border:0;">{{ number_format($subtotalWithNI, 2) }}</td>
+                            </tr>
+                        @endif
+                    </table>
+                @endforeach
+
+                <table style="width:100%; margin-top: 10px; border-collapse: collapse;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 4px 0; border:0;">Total Equities</td>
+                        <td class="text-right font-mono" style="width: 25%; font-weight: bold; padding: 4px 0; border-top: 1px solid #111; border-bottom: 3px double #111;">{{ number_format($data['total_liabilities_and_equity'], 2) }}</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 
-    <div class="section-title">Liabilities</div>
-    <table>
-        @foreach($data['liabilities'] as $row)
-            <tr>
-                <td style="width: 15%;">{{ $row['account_number'] }}</td>
-                <td>{{ $row['account_name'] }}</td>
-                <td class="text-right font-mono" style="width: 20%;">${{ number_format($row['amount'], 2) }}</td>
-            </tr>
-        @endforeach
-        <tr class="totals">
-            <td colspan="2" class="text-right">Total Liabilities</td>
-            <td class="text-right font-mono">${{ number_format($data['total_liabilities'], 2) }}</td>
-        </tr>
-    </table>
-
-    <div class="section-title">Equity</div>
-    <table>
-        @foreach($data['equity'] as $row)
-            <tr>
-                <td style="width: 15%;">{{ $row['account_number'] }}</td>
-                <td>{{ $row['account_name'] }}</td>
-                <td class="text-right font-mono" style="width: 20%;">${{ number_format($row['amount'], 2) }}</td>
-            </tr>
-        @endforeach
-        <tr>
-            <td colspan="2" class="text-right" style="color:#666;"><em>Current year net income</em></td>
-            <td class="text-right font-mono">${{ number_format($data['ytd_net_income'], 2) }}</td>
-        </tr>
-        <tr class="totals">
-            <td colspan="2" class="text-right">Total Equity</td>
-            <td class="text-right font-mono">${{ number_format($data['total_equity'] + $data['ytd_net_income'], 2) }}</td>
-        </tr>
-    </table>
-
-    <table style="margin-top: 14px;">
-        <tr class="totals">
-            <td><strong>Total Liabilities + Equity</strong></td>
-            <td class="text-right font-mono">${{ number_format($data['total_liabilities_and_equity'], 2) }}</td>
-        </tr>
-    </table>
     @if(!$data['balanced'])
-        <p style="color:#b91c1c; margin-top:8px;">Warning: balance sheet does not balance (Assets vs L+E differ by ${{ number_format(abs($data['total_assets'] - $data['total_liabilities_and_equity']), 2) }}).</p>
+        <p style="color:#b91c1c; margin-top:8px;">Warning: balance sheet does not balance (Assets vs Equities differ by ${{ number_format(abs($data['total_assets'] - $data['total_liabilities_and_equity']), 2) }}).</p>
     @endif
 @endsection

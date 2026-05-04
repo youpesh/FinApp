@@ -149,9 +149,9 @@ class FinancialReportService
         $liabilityAccounts = Account::active()->where('account_category', 'liability')->orderBy('account_number')->get();
         $equityAccounts = Account::active()->where('account_category', 'equity')->orderBy('account_number')->get();
 
-        [$assetRows, $totalAssets] = $this->balancesFor($assetAccounts, $asOf);
-        [$liabilityRows, $totalLiabilities] = $this->balancesFor($liabilityAccounts, $asOf);
-        [$equityRows, $totalEquity] = $this->balancesFor($equityAccounts, $asOf);
+        [$assetRows, $totalAssets, $assetGroups] = $this->balancesFor($assetAccounts, $asOf);
+        [$liabilityRows, $totalLiabilities, $liabilityGroups] = $this->balancesFor($liabilityAccounts, $asOf);
+        [$equityRows, $totalEquity, $equityGroups] = $this->balancesFor($equityAccounts, $asOf);
 
         // Net income from start of year through $asOf is implicitly included in equity only if
         // closing entries have been made. To make BS balance before closing, add YTD net income
@@ -167,6 +167,9 @@ class FinancialReportService
             'assets' => $assetRows,
             'liabilities' => $liabilityRows,
             'equity' => $equityRows,
+            'asset_groups' => $assetGroups,
+            'liability_groups' => $liabilityGroups,
+            'equity_groups' => $equityGroups,
             'total_assets' => round($totalAssets, 2),
             'total_liabilities' => round($totalLiabilities, 2),
             'total_equity' => round($totalEquity, 2),
@@ -229,19 +232,33 @@ class FinancialReportService
     private function balancesFor(Collection $accounts, Carbon $asOf): array
     {
         $rows = [];
+        $groups = [];
         $total = 0.0;
         foreach ($accounts as $account) {
             $balance = round($this->accountBalanceAsOf($account, $asOf), 2);
             if (abs($balance) < 0.005) continue;
             $total += $balance;
-            $rows[] = [
+            $row = [
                 'account_id' => $account->id,
                 'account_number' => $account->account_number,
                 'account_name' => $account->account_name,
                 'amount' => $balance,
             ];
+            $rows[] = $row;
+            $sub = $account->account_subcategory ?: 'Other';
+            $groups[$sub]['rows'][] = $row;
+            $groups[$sub]['subtotal'] = round(($groups[$sub]['subtotal'] ?? 0.0) + $balance, 2);
         }
-        return [$rows, round($total, 2)];
+
+        $groupList = [];
+        foreach ($groups as $name => $g) {
+            $groupList[] = [
+                'subcategory' => $name,
+                'rows' => $g['rows'],
+                'subtotal' => $g['subtotal'],
+            ];
+        }
+        return [$rows, round($total, 2), $groupList];
     }
 
     /**
