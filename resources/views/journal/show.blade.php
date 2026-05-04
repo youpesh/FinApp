@@ -128,10 +128,11 @@
                                     @php
                                         $totalDebit = 0;
                                         $totalCredit = 0;
+                                        $sortedLines = $journalEntry->lines->sortBy(fn($l) => $l->type === 'credit' ? 1 : 0)->values();
                                     @endphp
-                                    @foreach($journalEntry->lines as $line)
+                                    @foreach($sortedLines as $line)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4">
+                                            <td class="px-6 py-4 {{ $line->type === 'credit' ? 'pl-16' : '' }}">
                                                 <div class="text-sm font-medium text-indigo-600 hover:underline">
                                                     <a href="{{ route('accounts.show', $line->account_id) }}">{{ $line->account->account_number }}
                                                         - {{ $line->account->name }}</a>
