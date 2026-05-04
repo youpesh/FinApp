@@ -27,50 +27,46 @@
                 'emailSubject' => 'Trial Balance as of ' . $asOf->toFormattedDateString(),
             ])
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
                 @include('reports._heading', [
                     'statement' => 'Trial Balance',
-                    'period' => 'As of ' . $asOf->format('F d, Y'),
+                    'period' => 'As of ' . $asOf->format('F jS, Y'),
                 ])
 
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Account #</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Account</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase w-32">Debit</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase w-32">Credit</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($data['rows'] as $row)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-3 text-sm text-gray-500">{{ $row['account_number'] }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-900">
-                                    <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                </td>
-                                <td class="px-6 py-3 text-right font-mono text-sm text-gray-900">{{ $row['debit'] > 0 ? '$' . number_format($row['debit'], 2) : '' }}</td>
-                                <td class="px-6 py-3 text-right font-mono text-sm text-gray-900">{{ $row['credit'] > 0 ? '$' . number_format($row['credit'], 2) : '' }}</td>
+                <div class="px-8 py-6">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-700">
+                                <th class="text-left font-semibold pb-2 border-b border-gray-300">Account</th>
+                                <th class="text-right font-semibold pb-2 border-b border-gray-300 w-32">Debit</th>
+                                <th class="text-right font-semibold pb-2 border-b border-gray-300 w-32">Credit</th>
                             </tr>
-                        @empty
-                            <tr><td colspan="4" class="px-6 py-6 text-center text-sm text-gray-500">No balances to show.</td></tr>
-                        @endforelse
-                    </tbody>
-                    <tfoot class="bg-gray-50 font-bold">
-                        <tr>
-                            <td colspan="2" class="px-6 py-4 text-right text-gray-700">Totals:</td>
-                            <td class="px-6 py-4 text-right font-mono border-b-4 border-double border-gray-900">${{ number_format($data['total_debits'], 2) }}</td>
-                            <td class="px-6 py-4 text-right font-mono border-b-4 border-double border-gray-900">${{ number_format($data['total_credits'], 2) }}</td>
-                        </tr>
-                        @if(!$data['balanced'])
-                            <tr>
-                                <td colspan="4" class="px-6 py-2 text-right text-sm text-red-600">
-                                    Out of balance by ${{ number_format(abs($data['total_debits'] - $data['total_credits']), 2) }}
-                                </td>
+                        </thead>
+                        <tbody>
+                            @forelse($data['rows'] as $row)
+                                <tr>
+                                    <td class="py-1.5">
+                                        <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_number'] }} - {{ $row['account_name'] }}</a>
+                                    </td>
+                                    <td class="py-1.5 text-right font-mono text-gray-900">{{ $row['debit'] > 0 ? '$' . number_format($row['debit'], 2) : '' }}</td>
+                                    <td class="py-1.5 text-right font-mono text-gray-900">{{ $row['credit'] > 0 ? '$' . number_format($row['credit'], 2) : '' }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-6 text-center text-gray-500">No balances to show.</td></tr>
+                            @endforelse
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-bold">
+                                <td class="pt-4 text-gray-900">Total</td>
+                                <td class="pt-4 text-right font-mono text-gray-900" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding-bottom: 2px;">${{ number_format($data['total_debits'], 2) }}</td>
+                                <td class="pt-4 text-right font-mono text-gray-900" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding-bottom: 2px;">${{ number_format($data['total_credits'], 2) }}</td>
                             </tr>
-                        @endif
-                    </tfoot>
-                </table>
+                            @if(!$data['balanced'])
+                                <tr><td colspan="3" class="pt-2 text-right text-sm text-red-600">Out of balance by ${{ number_format(abs($data['total_debits'] - $data['total_credits']), 2) }}</td></tr>
+                            @endif
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

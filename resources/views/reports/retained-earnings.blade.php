@@ -32,31 +32,38 @@
                 'emailSubject' => 'Retained Earnings ' . $from->toFormattedDateString() . ' – ' . $to->toFormattedDateString(),
             ])
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
+            @php
+                $fmt = fn($v) => $v < 0 ? '($' . number_format(abs($v), 2) . ')' : '$' . number_format($v, 2);
+            @endphp
+
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
                 @include('reports._heading', [
                     'statement' => 'Statement of Retained Earnings',
-                    'period' => 'For the period ' . $from->format('F d, Y') . ' – ' . $to->format('F d, Y'),
+                    'period' => 'For the period ending ' . $to->format('F jS, Y'),
                 ])
-                <table class="min-w-full">
-                    <tbody>
-                        <tr class="border-b">
-                            <td class="px-6 py-3 text-sm font-medium text-gray-700">Retained Earnings, beginning of period</td>
-                            <td class="px-6 py-3 text-right font-mono text-sm">${{ number_format($data['opening_balance'], 2) }}</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="px-6 py-3 text-sm font-medium text-gray-700">Add: Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</td>
-                            <td class="px-6 py-3 text-right font-mono text-sm">{{ $data['net_income'] < 0 ? '(' : '' }}${{ number_format(abs($data['net_income']), 2) }}{{ $data['net_income'] < 0 ? ')' : '' }}</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="px-6 py-3 text-sm font-medium text-gray-700">Less: Distributions</td>
-                            <td class="px-6 py-3 text-right font-mono text-sm">{{ $data['distributions'] > 0 ? '(' : '' }}${{ number_format($data['distributions'], 2) }}{{ $data['distributions'] > 0 ? ')' : '' }}</td>
-                        </tr>
-                        <tr class="border-t-2 border-gray-900 font-bold">
-                            <td class="px-6 py-4 text-gray-900">Retained Earnings, end of period</td>
-                            <td class="px-6 py-4 text-right font-mono">${{ number_format($data['ending_balance'], 2) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <div class="px-8 py-6 text-sm">
+                    <div class="flex justify-end pb-2 border-b border-gray-300 mb-4">
+                        <span class="font-semibold text-gray-700">Total Amount</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-gray-700">Beginning Balance</span>
+                        <span class="font-mono text-gray-900">{{ $fmt($data['opening_balance']) }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-gray-700">Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</span>
+                        <span class="font-mono text-gray-900">{{ $fmt($data['net_income']) }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-gray-700">Less Drawings</span>
+                        <span class="font-mono text-gray-900">{{ $fmt(-$data['distributions']) }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 mt-2 font-bold">
+                        <span class="text-gray-900">Ending Balance</span>
+                        <span class="font-mono text-gray-900" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding: 2px 0;">{{ $fmt($data['ending_balance']) }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

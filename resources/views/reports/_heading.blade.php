@@ -1,5 +1,5 @@
-<div class="text-center py-4 border-b border-gray-200">
-    <p class="text-lg font-bold text-gray-900 tracking-wide">{{ config('app.company_name') }}</p>
-    <p class="text-base font-semibold text-gray-800">{{ $statement }}</p>
-    <p class="text-sm text-gray-600">{{ $period }}</p>
+<div class="bg-indigo-500/90 text-white text-center py-6 px-4">
+    <p class="text-lg font-semibold tracking-wide">{{ config('app.company_name') }}</p>
+    <p class="text-sm mt-1">{{ $statement }}</p>
+    <p class="text-xs mt-1 text-indigo-100">{{ $period }}</p>
 </div>

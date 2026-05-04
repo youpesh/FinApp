@@ -32,59 +32,56 @@
                 'emailSubject' => 'Income Statement ' . $from->toFormattedDateString() . ' – ' . $to->toFormattedDateString(),
             ])
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
+            @php
+                $fmt = fn($v) => $v < 0 ? '($' . number_format(abs($v), 2) . ')' : '$' . number_format($v, 2);
+            @endphp
+
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
                 @include('reports._heading', [
                     'statement' => 'Income Statement',
-                    'period' => 'For the period ' . $from->format('F d, Y') . ' – ' . $to->format('F d, Y'),
+                    'period' => 'For the period ending ' . $to->format('F jS, Y'),
                 ])
-                <div class="px-6 py-5">
-                    <h4 class="font-semibold text-gray-700 border-b pb-1 mb-2">Revenue</h4>
-                    <table class="min-w-full mb-5">
-                        <tbody>
-                            @forelse($data['revenues'] as $row)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="py-1 text-sm text-gray-500 w-24">{{ $row['account_number'] }}</td>
-                                    <td class="py-1 text-sm">
-                                        <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                    </td>
-                                    <td class="py-1 text-right font-mono text-sm w-40">${{ number_format($row['amount'], 2) }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="3" class="py-2 text-sm text-gray-500">No revenue activity.</td></tr>
-                            @endforelse
-                            <tr class="border-t font-bold">
-                                <td colspan="2" class="py-2 text-right text-gray-700">Total Revenue</td>
-                                <td class="py-2 text-right font-mono">${{ number_format($data['total_revenue'], 2) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
 
-                    <h4 class="font-semibold text-gray-700 border-b pb-1 mb-2">Expenses</h4>
-                    <table class="min-w-full mb-5">
-                        <tbody>
-                            @forelse($data['expenses'] as $row)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="py-1 text-sm text-gray-500 w-24">{{ $row['account_number'] }}</td>
-                                    <td class="py-1 text-sm">
-                                        <a href="{{ route('ledger.show', $row['account_id']) }}" class="text-indigo-600 hover:underline">{{ $row['account_name'] }}</a>
-                                    </td>
-                                    <td class="py-1 text-right font-mono text-sm w-40">${{ number_format($row['amount'], 2) }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="3" class="py-2 text-sm text-gray-500">No expense activity.</td></tr>
-                            @endforelse
-                            <tr class="border-t font-bold">
-                                <td colspan="2" class="py-2 text-right text-gray-700">Total Expenses</td>
-                                <td class="py-2 text-right font-mono">${{ number_format($data['total_expenses'], 2) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="px-8 py-6 text-sm">
+                    <div class="flex justify-end pb-2 border-b border-gray-300">
+                        <span class="font-semibold text-gray-700">Total Amount</span>
+                    </div>
 
-                    <div class="border-t-2 border-gray-900 pt-3 flex justify-between font-bold text-lg">
-                        <span>Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</span>
-                        <span class="font-mono {{ $data['net_income'] >= 0 ? 'text-green-700' : 'text-red-700' }}">
-                            ${{ number_format(abs($data['net_income']), 2) }}
-                        </span>
+                    {{-- Revenue --}}
+                    <h3 class="text-indigo-500 font-semibold mt-5 mb-1">Revenue</h3>
+                    @forelse($data['revenues'] as $row)
+                        <div class="flex justify-between py-1">
+                            <a href="{{ route('ledger.show', $row['account_id']) }}" class="pl-6 text-gray-700 hover:underline">{{ $row['account_name'] }}</a>
+                            <span class="font-mono text-gray-900">{{ $fmt($row['amount']) }}</span>
+                        </div>
+                    @empty
+                        <p class="pl-6 py-2 text-gray-500">No revenue activity.</p>
+                    @endforelse
+                    <div class="flex justify-between py-1 mt-1 font-bold">
+                        <span class="pl-6 text-gray-900">Revenue Total</span>
+                        <span class="font-mono text-gray-900" style="border-top: 1px solid #111; padding-top: 2px;">{{ $fmt($data['total_revenue']) }}</span>
+                    </div>
+
+                    {{-- Expenses --}}
+                    <h3 class="text-indigo-500 font-semibold mt-6 mb-1">Expenses</h3>
+                    @forelse($data['expenses'] as $row)
+                        <div class="flex justify-between py-1">
+                            <a href="{{ route('ledger.show', $row['account_id']) }}" class="pl-6 text-gray-700 hover:underline">{{ $row['account_name'] }}</a>
+                            <span class="font-mono text-gray-900">{{ $fmt($row['amount']) }}</span>
+                        </div>
+                    @empty
+                        <p class="pl-6 py-2 text-gray-500">No expense activity.</p>
+                    @endforelse
+                    <div class="flex justify-between py-1 mt-1 font-bold">
+                        <span class="pl-6 text-gray-900">Expenses Total</span>
+                        <span class="font-mono text-gray-900" style="border-top: 1px solid #111; padding-top: 2px;">{{ $fmt(-$data['total_expenses']) }}</span>
+                    </div>
+
+                    {{-- Net Income --}}
+                    <h3 class="text-indigo-500 font-semibold mt-6 mb-1">Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</h3>
+                    <div class="flex justify-between py-1 mt-1 font-bold">
+                        <span class="pl-6 text-gray-900">Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }} Total</span>
+                        <span class="font-mono text-gray-900" style="border-top: 1px solid #111; border-bottom: 3px double #111; padding: 2px 0;">{{ $fmt($data['net_income']) }}</span>
                     </div>
                 </div>
             </div>

@@ -1,22 +1,28 @@
 @extends('reports.pdf._layout')
 
 @section('content')
+    @php
+        $fmt = fn($v) => $v < 0 ? '($' . number_format(abs($v), 2) . ')' : '$' . number_format($v, 2);
+    @endphp
+
+    <div class="total-amount-header">Total Amount</div>
+
     <table>
         <tr>
-            <td>Retained Earnings, beginning of period</td>
-            <td class="text-right font-mono" style="width: 25%;">${{ number_format($data['opening_balance'], 2) }}</td>
+            <td>Beginning Balance</td>
+            <td class="text-right font-mono" style="width: 30%;">{{ $fmt($data['opening_balance']) }}</td>
         </tr>
         <tr>
-            <td>Add: Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</td>
-            <td class="text-right font-mono">{{ $data['net_income'] < 0 ? '(' : '' }}${{ number_format(abs($data['net_income']), 2) }}{{ $data['net_income'] < 0 ? ')' : '' }}</td>
+            <td>Net {{ $data['net_income'] >= 0 ? 'Income' : 'Loss' }}</td>
+            <td class="text-right font-mono">{{ $fmt($data['net_income']) }}</td>
         </tr>
         <tr>
-            <td>Less: Distributions</td>
-            <td class="text-right font-mono">{{ $data['distributions'] > 0 ? '(' : '' }}${{ number_format($data['distributions'], 2) }}{{ $data['distributions'] > 0 ? ')' : '' }}</td>
+            <td>Less Drawings</td>
+            <td class="text-right font-mono">{{ $fmt(-$data['distributions']) }}</td>
         </tr>
-        <tr class="totals">
-            <td><strong>Retained Earnings, end of period</strong></td>
-            <td class="text-right font-mono">${{ number_format($data['ending_balance'], 2) }}</td>
+        <tr class="grand-total">
+            <td>Ending Balance</td>
+            <td class="text-right font-mono double-rule">{{ $fmt($data['ending_balance']) }}</td>
         </tr>
     </table>
 @endsection
