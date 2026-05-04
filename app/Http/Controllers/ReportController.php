@@ -215,12 +215,14 @@ class ReportController extends Controller
      */
     private function buildPdf(array $params): array
     {
-        [$data, $parameters, $title] = $this->buildReportData($params);
+        [$data, $parameters, $title, $statementTitle, $periodLabel] = $this->buildReportData($params);
 
         $viewName = 'reports.pdf.' . str_replace('_', '-', $params['type']);
         $pdf = Pdf::loadView($viewName, [
             'data' => $data,
             'title' => $title,
+            'statementTitle' => $statementTitle,
+            'periodLabel' => $periodLabel,
             'parameters' => $parameters,
         ]);
 
@@ -235,19 +237,23 @@ class ReportController extends Controller
     private function buildReportData(array $params): array
     {
         $type = $params['type'];
-        $title = FinancialReport::TYPES[$type];
+        $statementTitle = FinancialReport::TYPES[$type];
+        $title = $statementTitle;
+        $periodLabel = null;
 
         switch ($type) {
             case 'trial_balance':
                 $asOf = $this->parseDate($params['as_of'] ?? null, now());
                 $data = $this->service->trialBalance($asOf);
                 $parameters = ['as_of' => $asOf->toDateString()];
+                $periodLabel = 'As of ' . $asOf->toFormattedDateString();
                 $title .= ' as of ' . $asOf->toFormattedDateString();
                 break;
             case 'balance_sheet':
                 $asOf = $this->parseDate($params['as_of'] ?? null, now());
                 $data = $this->service->balanceSheet($asOf);
                 $parameters = ['as_of' => $asOf->toDateString()];
+                $periodLabel = 'As of ' . $asOf->toFormattedDateString();
                 $title .= ' as of ' . $asOf->toFormattedDateString();
                 break;
             case 'income_statement':
@@ -255,6 +261,7 @@ class ReportController extends Controller
                 $to = !empty($params['date_to']) ? Carbon::parse($params['date_to']) : now();
                 $data = $this->service->incomeStatement($from, $to);
                 $parameters = ['date_from' => $from->toDateString(), 'date_to' => $to->toDateString()];
+                $periodLabel = 'For the period ' . $from->toFormattedDateString() . ' – ' . $to->toFormattedDateString();
                 $title .= " ({$from->toFormattedDateString()} – {$to->toFormattedDateString()})";
                 break;
             case 'retained_earnings':
@@ -262,12 +269,13 @@ class ReportController extends Controller
                 $to = !empty($params['date_to']) ? Carbon::parse($params['date_to']) : now();
                 $data = $this->service->retainedEarnings($from, $to);
                 $parameters = ['date_from' => $from->toDateString(), 'date_to' => $to->toDateString()];
+                $periodLabel = 'For the period ' . $from->toFormattedDateString() . ' – ' . $to->toFormattedDateString();
                 $title .= " ({$from->toFormattedDateString()} – {$to->toFormattedDateString()})";
                 break;
             default:
                 abort(404);
         }
 
-        return [$data, $parameters, $title];
+        return [$data, $parameters, $title, $statementTitle, $periodLabel];
     }
 }

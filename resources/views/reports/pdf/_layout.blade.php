@@ -5,8 +5,10 @@
     <title>{{ $title }}</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #111; }
-        h1 { font-size: 18px; margin: 0 0 4px 0; }
-        .subtitle { color: #666; font-size: 11px; margin-bottom: 16px; }
+        .report-heading { text-align: center; margin: 0 0 18px 0; padding-bottom: 8px; border-bottom: 1px solid #999; }
+        .report-heading .company { font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
+        .report-heading .statement { font-size: 13px; font-weight: bold; margin-top: 2px; }
+        .report-heading .period { font-size: 11px; color: #555; margin-top: 2px; }
         table { border-collapse: collapse; width: 100%; }
         th, td { padding: 5px 8px; text-align: left; }
         th { background: #f3f4f6; border-bottom: 1px solid #999; }
@@ -19,13 +21,18 @@
     </style>
 </head>
 <body>
-    <h1>{{ $title }}</h1>
-    <div class="subtitle">Smart Finance · Generated {{ now()->format('F d, Y g:ia') }}</div>
+    <div class="report-heading">
+        <div class="company">{{ config('app.company_name') }}</div>
+        <div class="statement">{{ $statementTitle ?? $title }}</div>
+        @isset($periodLabel)
+            <div class="period">{{ $periodLabel }}</div>
+        @endisset
+    </div>
 
     @yield('content')
 
     <div class="footer">
-        Parameters: {{ json_encode($parameters) }}
+        Generated {{ now()->format('F d, Y g:ia') }} · Parameters: {{ json_encode($parameters) }}
     </div>
 </body>
 </html>

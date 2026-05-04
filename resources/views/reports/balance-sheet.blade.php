@@ -28,13 +28,13 @@
             ])
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg">Balance Sheet</h3>
-                    <p class="text-sm text-gray-500">As of {{ $asOf->format('F d, Y') }}</p>
-                    @if(!$data['balanced'])
-                        <p class="mt-1 text-sm text-red-600 font-semibold">Warning: Balance sheet does not balance.</p>
-                    @endif
-                </div>
+                @include('reports._heading', [
+                    'statement' => 'Balance Sheet',
+                    'period' => 'As of ' . $asOf->format('F d, Y'),
+                ])
+                @if(!$data['balanced'])
+                    <p class="px-6 pt-2 text-sm text-red-600 font-semibold">Warning: Balance sheet does not balance.</p>
+                @endif
                 <div class="px-6 py-5 grid md:grid-cols-2 gap-8">
                     <!-- Assets -->
                     <div>

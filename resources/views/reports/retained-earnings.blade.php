@@ -33,10 +33,10 @@
             ])
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg">Statement of Retained Earnings</h3>
-                    <p class="text-sm text-gray-500">{{ $from->format('F d, Y') }} &ndash; {{ $to->format('F d, Y') }}</p>
-                </div>
+                @include('reports._heading', [
+                    'statement' => 'Statement of Retained Earnings',
+                    'period' => 'For the period ' . $from->format('F d, Y') . ' – ' . $to->format('F d, Y'),
+                ])
                 <table class="min-w-full">
                     <tbody>
                         <tr class="border-b">

@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Company / Reporting Entity Name
+    |--------------------------------------------------------------------------
+    |
+    | The name shown at the top of all financial statements (Trial Balance,
+    | Income Statement, Balance Sheet, Statement of Retained Earnings).
+    | Override per environment via COMPANY_NAME in your .env file.
+    |
+    */
+
+    'company_name' => env('COMPANY_NAME', 'Smart Finance'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
