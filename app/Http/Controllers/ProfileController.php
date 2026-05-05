@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,21 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->role === 'admin') {
+            $otherActiveAdmins = User::where('role', 'admin')
+                ->where('status', 'active')
+                ->where('id', '!=', $user->id)
+                ->count();
+
+            if ($otherActiveAdmins === 0) {
+                return Redirect::route('profile.edit')
+                    ->withErrors(
+                        ['password' => 'You are the last active administrator and cannot delete your account. Promote another user to administrator first.'],
+                        'userDeletion'
+                    );
+            }
+        }
 
         Auth::logout();
 

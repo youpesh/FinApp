@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Account;
 use App\Models\AccountEventLog;
 use App\Models\User;
+use App\Models\UserAccessRequest;
 use App\Models\ErrorMessage;
 use App\Services\PasswordService;
 use Illuminate\Database\Seeder;
@@ -257,10 +258,25 @@ class DatabaseSeeder extends Seeder
         // opening balances. Reports should match the textbook balance sheet
         // exactly, so transactions are left for the user to enter.
 
+        // Pending access request so the admin demo has something to approve.
+        UserAccessRequest::updateOrCreate(
+            ['email' => 'sarah.patel@example.com'],
+            [
+                'first_name' => 'Sarah',
+                'last_name' => 'Patel',
+                'address' => '482 Maple Street, Atlanta, GA 30301',
+                'dob' => '1994-07-18',
+                'security_question' => "What was the name of your first pet?",
+                'security_answer' => 'Biscuit',
+                'status' => 'pending',
+            ]
+        );
+
         $this->command->info('Database seeded successfully!');
         $this->command->info('Admin credentials: admin0126 / Admin123!');
         $this->command->info('Manager credentials: msmith0126 / Manager123!');
         $this->command->info('Accountant credentials: ajones0126 / Account123!');
         $this->command->info('Seeded: ' . count($accounts) . ' accounts (Lee Cage Plumbing Supplies opening balances)');
+        $this->command->info('Seeded: 1 pending access request (Sarah Patel) for admin demo');
     }
 }
