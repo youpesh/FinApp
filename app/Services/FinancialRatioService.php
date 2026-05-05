@@ -34,8 +34,9 @@ class FinancialRatioService
 
         $currentAssets = $this->sumSubcategory('asset', 'Current Assets', $asOf);
         $currentLiabilities = $this->sumSubcategory('liability', 'Current Liabilities', $asOf);
-        $cash = $this->sumByAccountNumbers([10100], $asOf);
-        $receivables = $this->sumByAccountNumbers([10200], $asOf);
+        // Cash: 10100 Cash at bank + 10200 Cash on hand. Receivables: 10300 Debtors.
+        $cash = $this->sumByAccountNumbers([10100, 10200], $asOf);
+        $receivables = $this->sumByAccountNumbers([10300], $asOf);
         $quickAssets = $cash + $receivables;
 
         $totalAssets = (float) $bs['total_assets'];

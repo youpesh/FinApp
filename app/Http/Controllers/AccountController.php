@@ -9,6 +9,8 @@ use App\Models\ErrorMessage;
 use App\Models\User;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use App\Services\FinancialReportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -187,9 +189,11 @@ class AccountController extends Controller
      * Deactivate an account (admin only).
      * Accounts with balance > 0 cannot be deactivated.
      */
-    public function deactivate(Account $account)
+    public function deactivate(Account $account, FinancialReportService $reports)
     {
-        if ((float) $account->balance != 0) {
+        $liveBalance = $reports->accountBalanceAsOf($account, Carbon::today());
+
+        if (abs($liveBalance) >= 0.005) {
             $msg = ErrorMessage::getByCode('ACCT_DEACTIVATE_BALANCE')
                 ?? 'Accounts with a balance greater than zero cannot be deactivated.';
 

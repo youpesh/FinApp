@@ -182,13 +182,22 @@ class FinancialReportService
     /**
      * Retained Earnings statement for a period.
      * Opening RE + Net Income - Distributions = Ending RE
-     * RE accounts are equity accounts with `statement = 'RE'`.
+     *
+     * Distributions include:
+     *  - period activity on debit-normal equity accounts (Drawings, Dividends, etc.)
+     *  - direct debits posted to credit-normal RE-tagged accounts
      */
     public function retainedEarnings(Carbon $from, Carbon $to): array
     {
         $reAccounts = Account::active()
             ->where('account_category', 'equity')
             ->where('statement', 'RE')
+            ->orderBy('account_number')
+            ->get();
+
+        $distributionAccounts = Account::active()
+            ->where('account_category', 'equity')
+            ->where('normal_side', 'debit')
             ->orderBy('account_number')
             ->get();
 
@@ -203,15 +212,15 @@ class FinancialReportService
         $is = $this->incomeStatement($from, $to);
         $netIncome = $is['net_income'];
 
-        // Distributions: any debits against RE accounts during the period (e.g. dividends)
+        // Distributions: period activity on debit-normal equity (drawings/dividends),
+        // plus any direct debits against credit-normal RE-tagged accounts.
         $distributions = 0.0;
+        foreach ($distributionAccounts as $account) {
+            $distributions += $this->periodActivity($account, $from, $to);
+        }
         foreach ($reAccounts as $account) {
-            $debits = $this->sumApprovedLines($account, 'debit', $from, $to);
-            $credits = $this->sumApprovedLines($account, 'credit', $from, $to);
-            // For a credit-normal equity account, debits reduce the balance — treat as distributions.
-            // Net credits are just closing entries that flow through net income, so don't double-count.
             if (strtolower($account->normal_side) === 'credit') {
-                $distributions += $debits; // only raw debits, not net
+                $distributions += $this->sumApprovedLines($account, 'debit', $from, $to);
             }
         }
 
