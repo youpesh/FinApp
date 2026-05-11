@@ -6,7 +6,7 @@ A comprehensive, modern accounting software system built with Laravel 11, featur
 ![PHP](https://img.shields.io/badge/PHP-8.5-blue?style=flat-square&logo=php)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-## 📋 Table of Contents:
+## 📋 Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
