@@ -63,18 +63,17 @@ A comprehensive, modern accounting software system built with Laravel 11, featur
 - Account ledger with clickable post references
 - Balance calculations and reporting
 
-### Sprint 4: Financial Reports (Planned)
-- Trial Balance generation
-- Income Statement
-- Balance Sheet
-- Retained Earnings Statement
-- PDF export and email functionality
+### Sprint 4: Adjusting Entries & Financial Reports ✅ COMPLETED
+- Adjusting journal entries with manager approval workflow
+- Trial Balance, Income Statement, Balance Sheet, Retained Earnings Statement
+- PDF export and email delivery of reports
+- In-app notifications for pending approvals and rejections
+- Per-account email composer for follow-ups
 
-### Sprint 5: Dashboard & Analytics (Planned)
-- Financial ratio calculations with color-coded indicators
+### Sprint 5: Dashboard & Financial Ratios ✅ COMPLETED
 - Role-specific dashboards
-- Pending approval notifications
-- Comprehensive help system
+- Financial ratio calculations (liquidity, profitability, leverage) with color-coded health bands
+- Pending approval and notification surfacing on dashboard
 
 ## 🛠 Tech Stack
 
@@ -209,11 +208,13 @@ For password expiry notifications, add this to your crontab:
 
 The seeder creates three test accounts:
 
-| Role        | Email                 | Password     |
-|-------------|-----------------------|--------------|
-| Admin       | admin@finapp.com      | Admin123!    |
-| Manager     | manager@finapp.com    | Manager123!  |
-| Accountant  | accountant@finapp.com | Account123!  |
+Login is by **username** (not email).
+
+| Role        | Username    | Password     |
+|-------------|-------------|--------------|
+| Admin       | admin0126   | Admin123!    |
+| Manager     | msmith0126  | Manager123!  |
+| Accountant  | ajones0126  | Account123!  |
 
 **⚠️ Important**: Change these passwords immediately in production!
 
@@ -273,8 +274,8 @@ Smart Finance/
   - [x] Source document attachments
   - [x] Manager approval workflow with mandated rejection reasons
   - [x] General ledger calculation and post references
-- [ ] **Sprint 4**: Adjusting Entries & Financial Reports
-- [ ] **Sprint 5**: Dashboard & Financial Ratios
+- [x] **Sprint 4**: Adjusting Entries & Financial Reports ✅
+- [x] **Sprint 5**: Dashboard & Financial Ratios ✅
 
 ## 🔒 Security Features
 
